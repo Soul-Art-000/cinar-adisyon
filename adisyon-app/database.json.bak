@@ -1,0 +1,797 @@
+{
+  "settings": {
+    "zones": [
+      "BAHÇE"
+    ],
+    "categories": [
+      "GIDA",
+      "IZGARALAR",
+      "BOWL",
+      "DÜRÜMLER & EKMEK ARASI",
+      "BURGER",
+      "APERATİFLER",
+      "TATLILAR",
+      "İÇECEKLER"
+    ]
+  },
+  "tables": [
+    {
+      "id": "SALON-1",
+      "name": "Salon 1",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-2",
+      "name": "Salon 2",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-3",
+      "name": "Salon 3",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-4",
+      "name": "Salon 4",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-5",
+      "name": "Salon 5",
+      "zone": "İÇ SALON",
+      "status": "occupied",
+      "orderId": "order-salon-4"
+    },
+    {
+      "id": "SALON-6",
+      "name": "Salon 6",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-7",
+      "name": "Salon 7",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-8",
+      "name": "Salon 8",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-9",
+      "name": "Salon 9",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "SALON-10",
+      "name": "Salon 10",
+      "zone": "İÇ SALON",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHCE-1",
+      "name": "Kamelya 1",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHCE-2",
+      "name": "Kamelya 2",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHCE-3",
+      "name": "Kamelya 3",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHCE-4",
+      "name": "Kamelya 4",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHCE-5",
+      "name": "Kamelya 5",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-1",
+      "name": "Masa 1",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-2",
+      "name": "Masa 2",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-3",
+      "name": "Masa 3",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-4",
+      "name": "Masa 4",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-5",
+      "name": "Masa 5",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-6",
+      "name": "Masa 6",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-7",
+      "name": "Masa 7",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-8",
+      "name": "Masa 8",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-1",
+      "name": "Masa 1",
+      "zone": "MASAM",
+      "status": "occupied",
+      "orderId": "order-mu3w5ozazvb0ars1k6m"
+    },
+    {
+      "id": "MASAM-2",
+      "name": "Masa 2",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-3",
+      "name": "Masa 3",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-4",
+      "name": "Masa 4",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-5",
+      "name": "Masa 5",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-6",
+      "name": "Masa 6",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-7",
+      "name": "Masa 7",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "MASAM-8",
+      "name": "Masa 8",
+      "zone": "MASAM",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-1",
+      "name": "Masa 1",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-2",
+      "name": "Masa 2",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-4",
+      "name": "Masa 4",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-3",
+      "name": "Masa 3",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-5",
+      "name": "Masa 5",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-6",
+      "name": "Masa 6",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-7",
+      "name": "Masa 7",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    },
+    {
+      "id": "BAHÇE-8",
+      "name": "Masa 8",
+      "zone": "BAHÇE",
+      "status": "empty",
+      "orderId": null
+    }
+  ],
+  "orders": [
+    {
+      "id": "order-teras-0",
+      "tableId": "TERAS-1",
+      "items": [
+        {
+          "productId": "p1",
+          "name": "Çay",
+          "price": 20,
+          "qty": 3
+        },
+        {
+          "productId": "p5",
+          "name": "Fıstıklı Baklava (Kg)",
+          "price": 850,
+          "qty": 0.5,
+          "unit": "kg"
+        }
+      ],
+      "status": "open",
+      "total": 485,
+      "createdAt": 1789500000000
+    },
+    {
+      "id": "order-teras-1",
+      "tableId": "TERAS-2",
+      "items": [
+        {
+          "productId": "p3",
+          "name": "Türk Kahvesi",
+          "price": 50,
+          "qty": 2
+        }
+      ],
+      "status": "open",
+      "total": 100,
+      "createdAt": 1789501000000
+    },
+    {
+      "id": "order-teras-2",
+      "tableId": "TERAS-3",
+      "items": [
+        {
+          "productId": "p4",
+          "name": "Karışık Izgara",
+          "price": 450,
+          "qty": 2
+        },
+        {
+          "productId": "p2",
+          "name": "Kola",
+          "price": 40,
+          "qty": 2
+        }
+      ],
+      "status": "open",
+      "total": 980,
+      "createdAt": 1789498000000
+    },
+    {
+      "id": "order-salon-4",
+      "tableId": "SALON-5",
+      "items": [
+        {
+          "productId": "p6",
+          "name": "Çekirdek (Kg)",
+          "price": 200,
+          "qty": 0.25,
+          "unit": "kg"
+        },
+        {
+          "productId": "p1",
+          "name": "Çay",
+          "price": 20,
+          "qty": 1
+        }
+      ],
+      "status": "open",
+      "total": 70,
+      "createdAt": 1789502000000
+    },
+    {
+      "id": "order-mu3vycwwqpwifiwjb3n",
+      "tableId": "SASASA-1",
+      "items": [
+        {
+          "productId": "mu3vyawyf5xqwive6ol",
+          "name": "hdhd",
+          "price": 10,
+          "qty": 2
+        }
+      ],
+      "status": "paid",
+      "total": 20,
+      "createdAt": 1789550149856
+    },
+    {
+      "id": "order-mu3w5ozazvb0ars1k6m",
+      "tableId": "MASAM-1",
+      "items": [
+        {
+          "productId": "mu3w5muw7y1jvw5zj6",
+          "name": "asa",
+          "price": 10,
+          "qty": 1
+        }
+      ],
+      "status": "open",
+      "total": 10,
+      "createdAt": 1789550492086
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "name": "Çay",
+      "price": 20,
+      "color": "bg-red-500",
+      "category": "SICAK İÇECEKLER",
+      "unit": "adet"
+    },
+    {
+      "id": "p3",
+      "name": "Türk Kahvesi",
+      "price": 50,
+      "color": "bg-amber-800",
+      "category": "SICAK İÇECEKLER",
+      "unit": "adet"
+    },
+    {
+      "id": "p2",
+      "name": "Kola",
+      "price": 40,
+      "color": "bg-slate-800",
+      "category": "SOĞUK İÇECEKLER",
+      "unit": "adet"
+    },
+    {
+      "id": "p7",
+      "name": "Limonata",
+      "price": 50,
+      "color": "bg-yellow-400",
+      "category": "SOĞUK İÇECEKLER",
+      "unit": "adet"
+    },
+    {
+      "id": "p4",
+      "name": "Karışık Izgara",
+      "price": 450,
+      "color": "bg-orange-600",
+      "category": "ANA YEMEK",
+      "unit": "adet"
+    },
+    {
+      "id": "p8",
+      "name": "Tavuk Şiş",
+      "price": 220,
+      "color": "bg-amber-600",
+      "category": "ANA YEMEK",
+      "unit": "adet"
+    },
+    {
+      "id": "p9",
+      "name": "Sütlaç",
+      "price": 90,
+      "color": "bg-blue-300",
+      "category": "TATLI & PASTA",
+      "unit": "adet"
+    },
+    {
+      "id": "p5",
+      "name": "Fıstıklı Baklava (Kg)",
+      "price": 850,
+      "color": "bg-green-600",
+      "category": "TARTILAN ÜRÜNLER",
+      "unit": "kg"
+    },
+    {
+      "id": "p6",
+      "name": "Çekirdek (Kg)",
+      "price": 200,
+      "color": "bg-stone-500",
+      "category": "TARTILAN ÜRÜNLER",
+      "unit": "kg"
+    },
+    {
+      "id": "p10",
+      "name": "Kestane (Kg)",
+      "price": 400,
+      "color": "bg-amber-900",
+      "category": "TARTILAN ÜRÜNLER",
+      "unit": "kg"
+    },
+    {
+      "id": "mu3vyawyf5xqwive6ol",
+      "name": "hdhd",
+      "price": 10,
+      "category": "GIDA",
+      "color": "bg-orange-500",
+      "unit": "adet"
+    },
+    {
+      "id": "mu3w5muw7y1jvw5zj6",
+      "name": "asa",
+      "price": 10,
+      "category": "GIDA",
+      "color": "bg-orange-500",
+      "unit": "adet"
+    },
+    {
+      "id": "test-123",
+      "name": "TEST URUN"
+    },
+    {
+      "id": "p-test-refresh",
+      "name": "Refresh Test Product",
+      "price": 10,
+      "category": "TEST"
+    },
+    {
+      "id": "bulk-1",
+      "name": "Bulk Urun 1"
+    },
+    {
+      "id": "bulk-2",
+      "name": "Bulk Urun 2"
+    },
+    {
+      "id": "fetch-test",
+      "name": "Fetch Test"
+    },
+    {
+      "id": "proxy-test",
+      "name": "Proxy Test"
+    },
+    {
+      "id": "p-1k",
+      "name": "1 Kişilik Karışık Izgara",
+      "price": 650,
+      "category": "IZGARALAR",
+      "color": "bg-red-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-adp",
+      "name": "Adana Porsiyon",
+      "price": 380,
+      "category": "IZGARALAR",
+      "color": "bg-orange-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-kuzup",
+      "name": "Kuzu Pirzola",
+      "price": 550,
+      "category": "IZGARALAR",
+      "color": "bg-red-700",
+      "unit": "adet"
+    },
+    {
+      "id": "p-kuzus",
+      "name": "Kuzu Şiş",
+      "price": 420,
+      "category": "IZGARALAR",
+      "color": "bg-red-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-koftep",
+      "name": "Köfte Porsiyon",
+      "price": 320,
+      "category": "IZGARALAR",
+      "color": "bg-orange-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-tavukp",
+      "name": "Tavuk Pirzola",
+      "price": 280,
+      "category": "IZGARALAR",
+      "color": "bg-amber-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-tavuks",
+      "name": "Tavuk Şiş",
+      "price": 260,
+      "category": "IZGARALAR",
+      "color": "bg-amber-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-tavukk",
+      "name": "Tavuk Kanat",
+      "price": 270,
+      "category": "IZGARALAR",
+      "color": "bg-amber-700",
+      "unit": "adet"
+    },
+    {
+      "id": "p-tavukb",
+      "name": "Tavuklu Bowl",
+      "price": 250,
+      "category": "BOWL",
+      "color": "bg-lime-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-falafelb",
+      "name": "Falafel Bowl",
+      "price": 220,
+      "category": "BOWL",
+      "color": "bg-green-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-hatayd",
+      "name": "Hatay Usulü Tavuk Döner",
+      "price": 160,
+      "category": "DÜRÜMLER & EKMEK ARASI",
+      "color": "bg-yellow-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-adanad",
+      "name": "Adana Dürüm",
+      "price": 200,
+      "category": "DÜRÜMLER & EKMEK ARASI",
+      "color": "bg-orange-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-koftee",
+      "name": "Köfte Ekmek",
+      "price": 180,
+      "category": "DÜRÜMLER & EKMEK ARASI",
+      "color": "bg-yellow-700",
+      "unit": "adet"
+    },
+    {
+      "id": "p-burgerm",
+      "name": "Burger Menü",
+      "price": 300,
+      "category": "BURGER",
+      "color": "bg-stone-600",
+      "unit": "adet"
+    },
+    {
+      "id": "p-cigkofted",
+      "name": "Çiğ Köfte Dürüm",
+      "price": 80,
+      "category": "APERATİFLER",
+      "color": "bg-red-800",
+      "unit": "adet"
+    },
+    {
+      "id": "p-cigkoftep",
+      "name": "Çiğ Köfte Porsiyon",
+      "price": 120,
+      "category": "APERATİFLER",
+      "color": "bg-red-900",
+      "unit": "adet"
+    },
+    {
+      "id": "p-baklava",
+      "name": "Baklava",
+      "price": 150,
+      "category": "TATLILAR",
+      "color": "bg-emerald-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-magnolya",
+      "name": "Magnolya",
+      "price": 120,
+      "category": "TATLILAR",
+      "color": "bg-pink-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-sutlac",
+      "name": "Fırın Sütlaç",
+      "price": 90,
+      "category": "TATLILAR",
+      "color": "bg-blue-300",
+      "unit": "adet"
+    },
+    {
+      "id": "p-osmanli",
+      "name": "Osmanlı Şerbeti",
+      "price": 60,
+      "category": "İÇECEKLER",
+      "color": "bg-fuchsia-700",
+      "unit": "adet"
+    },
+    {
+      "id": "p-ayran",
+      "name": "Yayık Ayran",
+      "price": 40,
+      "category": "İÇECEKLER",
+      "color": "bg-slate-300",
+      "unit": "adet"
+    },
+    {
+      "id": "p-gazoz",
+      "name": "Gazoz (Niğde/Zafer)",
+      "price": 40,
+      "category": "İÇECEKLER",
+      "color": "bg-cyan-300",
+      "unit": "adet"
+    },
+    {
+      "id": "p-kola",
+      "name": "Kola / Fanta",
+      "price": 50,
+      "category": "İÇECEKLER",
+      "color": "bg-stone-800",
+      "unit": "adet"
+    },
+    {
+      "id": "p-su",
+      "name": "Su",
+      "price": 15,
+      "category": "İÇECEKLER",
+      "color": "bg-blue-200",
+      "unit": "adet"
+    },
+    {
+      "id": "p-cay",
+      "name": "Çay",
+      "price": 20,
+      "category": "İÇECEKLER",
+      "color": "bg-red-600",
+      "unit": "adet"
+    }
+  ],
+  "sales": [
+    {
+      "id": "mu3vywc3v79u36dej8j",
+      "tableId": "SASASA-1",
+      "tableName": "Masa 1 (SASASA)",
+      "items": [
+        {
+          "productId": "mu3vyawyf5xqwive6ol",
+          "name": "hdhd",
+          "price": 10,
+          "qty": 2
+        }
+      ],
+      "subtotal": 20,
+      "paymentMethod": "nakit",
+      "customerId": "",
+      "newCustomerName": "",
+      "discountType": "percent",
+      "discountValue": 0,
+      "discountAmount": 0,
+      "finalTotal": 20,
+      "paidAt": "16.09.2026 12:16",
+      "createdAt": 1789550175029
+    }
+  ],
+  "veresiye": [
+    {
+      "id": "v1",
+      "name": "Ahmet Yılmaz (Toptancı)",
+      "phone": "0532 123 45 67",
+      "debt": 1250,
+      "createdAt": 1789100000000,
+      "logs": [
+        {
+          "id": "l1",
+          "type": "debt",
+          "amount": 1500,
+          "date": "10.09.2026 14:30",
+          "createdAt": 1789100000000,
+          "note": "Başlangıç Borcu"
+        },
+        {
+          "id": "l2",
+          "type": "payment",
+          "amount": 250,
+          "date": "12.09.2026 09:15",
+          "createdAt": 1789300000000,
+          "note": "Nakit bıraktı"
+        }
+      ]
+    },
+    {
+      "id": "v2",
+      "name": "Mehmet Usta (Esnaf)",
+      "phone": "0555 987 65 43",
+      "debt": -100,
+      "createdAt": 1789400000000,
+      "logs": [
+        {
+          "id": "l3",
+          "type": "payment",
+          "amount": 100,
+          "date": "14.09.2026 11:00",
+          "createdAt": 1789500000000,
+          "note": "Fazladan ödeme yaptı (Alacaklı)"
+        }
+      ]
+    }
+  ]
+}

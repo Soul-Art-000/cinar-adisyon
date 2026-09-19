@@ -1,0 +1,41 @@
+name: Build Tauri App
+on:
+  push:
+    branches: [ "master", "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Install Frontend Dependencies
+        working-directory: ./adisyon-app
+        run: npm install
+
+      - name: Build and Package Tauri
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: ./adisyon-app
+          tagName: v1.0.${{ github.run_number }}
+          releaseName: 'Adisyon App - Sürüm 1.0.${{ github.run_number }}'
+          releaseBody: 'Adisyon sistemi kurulum dosyaları. AI tarafından üretilmiştir.'
+          releaseDraft: false
+          prerelease: false

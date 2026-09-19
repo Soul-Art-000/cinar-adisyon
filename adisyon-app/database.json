@@ -1,0 +1,48 @@
+{
+  "settings": {
+    "zones": ["BAHÇE"],
+    "categories": ["GIDA", "IZGARALAR", "BOWL", "DÜRÜMLER & EKMEK ARASI", "BURGER", "APERATİFLER", "TATLILAR", "İÇECEKLER"]
+  },
+  "tables": [
+    {"id": "BAHÇE-1", "name": "Masa 1", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-2", "name": "Masa 2", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-3", "name": "Masa 3", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-4", "name": "Masa 4", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-5", "name": "Masa 5", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-6", "name": "Masa 6", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-7", "name": "Masa 7", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-8", "name": "Masa 8", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-9", "name": "Masa 9", "zone": "BAHÇE", "status": "empty", "orderId": null},
+    {"id": "BAHÇE-10", "name": "Masa 10", "zone": "BAHÇE", "status": "empty", "orderId": null}
+  ],
+  "orders": [],
+  "products": [
+    { "id": "p-1k", "name": "1 Kişilik Karışık Izgara", "price": 650, "category": "IZGARALAR", "color": "bg-red-600", "unit": "adet" },
+    { "id": "p-adp", "name": "Adana Porsiyon", "price": 380, "category": "IZGARALAR", "color": "bg-orange-600", "unit": "adet" },
+    { "id": "p-kuzup", "name": "Kuzu Pirzola", "price": 550, "category": "IZGARALAR", "color": "bg-red-700", "unit": "adet" },
+    { "id": "p-kuzus", "name": "Kuzu Şiş", "price": 420, "category": "IZGARALAR", "color": "bg-red-500", "unit": "adet" },
+    { "id": "p-koftep", "name": "Köfte Porsiyon", "price": 320, "category": "IZGARALAR", "color": "bg-orange-500", "unit": "adet" },
+    { "id": "p-tavukp", "name": "Tavuk Pirzola", "price": 280, "category": "IZGARALAR", "color": "bg-amber-600", "unit": "adet" },
+    { "id": "p-tavuks", "name": "Tavuk Şiş", "price": 260, "category": "IZGARALAR", "color": "bg-amber-500", "unit": "adet" },
+    { "id": "p-tavukk", "name": "Tavuk Kanat", "price": 270, "category": "IZGARALAR", "color": "bg-amber-700", "unit": "adet" },
+    { "id": "p-tavukb", "name": "Tavuklu Bowl", "price": 250, "category": "BOWL", "color": "bg-lime-600", "unit": "adet" },
+    { "id": "p-falafelb", "name": "Falafel Bowl", "price": 220, "category": "BOWL", "color": "bg-green-600", "unit": "adet" },
+    { "id": "p-hatayd", "name": "Hatay Usulü Tavuk Döner", "price": 160, "category": "DÜRÜMLER & EKMEK ARASI", "color": "bg-yellow-600", "unit": "adet" },
+    { "id": "p-adanad", "name": "Adana Dürüm", "price": 200, "category": "DÜRÜMLER & EKMEK ARASI", "color": "bg-orange-600", "unit": "adet" },
+    { "id": "p-koftee", "name": "Köfte Ekmek", "price": 180, "category": "DÜRÜMLER & EKMEK ARASI", "color": "bg-yellow-700", "unit": "adet" },
+    { "id": "p-burgerm", "name": "Burger Menü", "price": 300, "category": "BURGER", "color": "bg-stone-600", "unit": "adet" },
+    { "id": "p-cigkofted", "name": "Çiğ Köfte Dürüm", "price": 80, "category": "APERATİFLER", "color": "bg-red-800", "unit": "adet" },
+    { "id": "p-cigkoftep", "name": "Çiğ Köfte Porsiyon", "price": 120, "category": "APERATİFLER", "color": "bg-red-900", "unit": "adet" },
+    { "id": "p-baklava", "name": "Baklava", "price": 150, "category": "TATLILAR", "color": "bg-emerald-500", "unit": "adet" },
+    { "id": "p-magnolya", "name": "Magnolya", "price": 120, "category": "TATLILAR", "color": "bg-pink-500", "unit": "adet" },
+    { "id": "p-sutlac", "name": "Fırın Sütlaç", "price": 90, "category": "TATLILAR", "color": "bg-blue-300", "unit": "adet" },
+    { "id": "p-osmanli", "name": "Osmanlı Şerbeti", "price": 60, "category": "İÇECEKLER", "color": "bg-fuchsia-700", "unit": "adet" },
+    { "id": "p-ayran", "name": "Yayık Ayran", "price": 40, "category": "İÇECEKLER", "color": "bg-slate-300", "unit": "adet" },
+    { "id": "p-gazoz", "name": "Gazoz (Niğde/Zafer)", "price": 40, "category": "İÇECEKLER", "color": "bg-cyan-300", "unit": "adet" },
+    { "id": "p-kola", "name": "Kola / Fanta", "price": 50, "category": "İÇECEKLER", "color": "bg-stone-800", "unit": "adet" },
+    { "id": "p-su", "name": "Su", "price": 15, "category": "İÇECEKLER", "color": "bg-blue-200", "unit": "adet" },
+    { "id": "p-cay", "name": "Çay", "price": 20, "category": "İÇECEKLER", "color": "bg-red-600", "unit": "adet" }
+  ],
+  "sales": [],
+  "veresiye": []
+}

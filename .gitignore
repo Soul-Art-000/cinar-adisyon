@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+adisyon-app/src-tauri/target/
+adisyon-app/node_modules/
+adisyon-app/dist/
+adisyon-server/node_modules/
+scratch/
