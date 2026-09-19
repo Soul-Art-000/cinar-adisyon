@@ -128,7 +128,7 @@ pub fn run() {
             let db_path = app_data_dir.join("database.json");
             
             let default_db = serde_json::json!({
-                "settings": { "zones": ["BAHÇE", "SALON", "TERAS"], "categories": ["YİYECEKLER", "İÇECEKLER", "TATLILAR"] },
+                "settings": { "zones": [], "categories": [] },
                 "products": [], "tables": [], "orders": [], "sales": [], "veresiye": []
             });
 
