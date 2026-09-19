@@ -15,6 +15,3 @@ Bu proje, yerel ağ üzerinde çalışan (internetsiz veya internetli) ve garson
 ## Nasıl Çalıştırılır?
 1. **Kasa Bilgisayarı:** Uygulamayı indirip (Windows için `.exe`, Mac için `.dmg`) kurun ve açın.
 2. **Garson Telefonu:** Aynı WiFi ağına bağlanın ve Kasa ekranının "Ayarlar" bölümünde yazan IP adresine (Örn: `http://192.168.1.133:3001`) Safari veya Chrome üzerinden girin. Ana ekrana ekleyerek tam ekran uygulama gibi kullanabilirsiniz.
-
-## Otomatik Derleme (GitHub Actions)
-Bu projenin kodları GitHub'a her yüklendiğinde, Microsoft (GitHub Actions) sunucuları otomatik olarak Windows (.exe) ve macOS (.dmg) sürümlerini derleyip **Releases (Sürümler)** sekmesine ekler.
