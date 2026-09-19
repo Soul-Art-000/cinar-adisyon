@@ -28,7 +28,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
   
   const testPrint = () => {
     if(!selectedPrinter) return alert("Önce yazıcı seçin!");
-    invoke('print_receipt', { printerName: selectedPrinter, receiptText: "TEST FISI\n\nCINAR ADISYON\nBasariyla Calisiyor.\n\n------------------\n" })
+    invoke('print_receipt', { printerName: selectedPrinter, receiptText: "TEST FISI\n\nLOCAL ADISYON\nBasariyla Calisiyor.\n\n------------------\n" })
       .then(() => alert("Test fişi gönderildi!"))
       .catch(e => alert("Hata: " + e));
   };
