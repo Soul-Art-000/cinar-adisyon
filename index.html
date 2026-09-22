@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Adisyo Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+          --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      body {
+          margin: 0;
+          padding: 0;
+          overscroll-behavior-y: none;
+          background-color: #F3F4F6;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      
+      .btn-press { transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out); }
+      .btn-press:active { transform: scale(0.95); }
+      
+      .card-interactive {
+          transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+      }
+      .card-interactive:active {
+          transform: scale(0.96);
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      @keyframes slideUpFade {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animate-in {
+          animation: slideUpFade 400ms var(--ease-out) forwards;
+      }
+      
+      ::-webkit-scrollbar { width: 0px; background: transparent; }
+      
+      /* Hide views */
+      .view-hidden { display: none !important; }
+  </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+  <!-- ================= MASALAR VIEW ================= -->
+  <div id="view-masalar" class="flex flex-col h-full w-full">
+      <div class="bg-[#D32F2F] text-white shadow-md z-10 shrink-0">
+          <div class="flex justify-between items-center px-4 py-3">
+              <h1 class="text-xl font-medium tracking-wide">Masalar</h1>
+              <button class="btn-press p-2 rounded-full hover:bg-white/10">
+                  <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+              </button>
+          </div>
+          
+          <div class="flex overflow-x-auto px-2 text-sm font-medium text-white/80 uppercase border-b border-red-800/50" id="tabs-container">
+              <!-- Tabs JS Generated -->
+          </div>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 pb-24" id="table-grid">
+          <!-- Tables JS Generated -->
+      </div>
+  </div>
+
+  <!-- ================= URUNLER VIEW ================= -->
+  <div id="view-urunler" class="flex flex-col h-full w-full view-hidden bg-gray-50">
+      <div class="bg-[#D32F2F] text-white shadow-md z-10 shrink-0">
+          <div class="flex justify-between items-center px-4 py-3">
+              <h1 class="text-xl font-medium tracking-wide" id="active-table-title">Ürünler</h1>
+          </div>
+          <div class="flex overflow-x-auto px-2 text-sm font-medium text-white/80 uppercase border-b border-red-800/50">
+              <div class="relative px-4 py-3 whitespace-nowrap text-white">
+                  YİYECEKLER
+                  <div class="absolute bottom-0 left-0 w-full h-1 bg-cyan-400"></div>
+              </div>
+              <div class="relative px-4 py-3 whitespace-nowrap">İÇECEKLER</div>
+          </div>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 pb-24 grid grid-cols-2 md:grid-cols-4 gap-4" id="products-grid">
+          <!-- Products JS Generated -->
+      </div>
+  </div>
+
+  <!-- ================= FIS VIEW ================= -->
+  <div id="view-fis" class="flex flex-col h-full w-full view-hidden bg-white">
+      <div class="bg-gray-800 text-white shadow-md z-10 shrink-0 px-4 py-3">
+          <h1 class="text-xl font-medium tracking-wide">Adisyon / Fiş</h1>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 pb-24" id="receipt-list">
+          <div class="text-center text-gray-500 mt-10">Henüz sipariş eklenmedi.</div>
+      </div>
+      <div class="bg-gray-50 border-t border-gray-200 p-4 mb-16 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-10 shrink-0">
+          <div class="flex justify-between font-bold text-lg mb-4">
+              <span>TOPLAM</span>
+              <span id="total-price">0.00 TL</span>
+          </div>
+          <button class="w-full bg-green-500 text-white font-bold py-3 rounded-lg btn-press text-lg shadow-md" onclick="alert('Ödeme Alındı!')">
+              ÖDEME AL
+          </button>
+      </div>
+  </div>
+
+  <!-- ================= BOTTOM NAV ================= -->
+  <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around pb-4 pt-2 px-2 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] z-50">
+      <button onclick="switchView('masalar')" id="nav-masalar" class="btn-press flex flex-col items-center p-2 text-[#D32F2F]">
+          <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          <span class="text-[10px] font-bold">Masalar</span>
+      </button>
+      <button onclick="switchView('urunler')" id="nav-urunler" class="btn-press flex flex-col items-center p-2 text-gray-400">
+          <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+          <span class="text-[10px] font-bold">Ürünler</span>
+      </button>
+      <button onclick="switchView('fis')" id="nav-fis" class="btn-press flex flex-col items-center p-2 text-gray-400">
+          <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="text-[10px] font-bold">Adisyon</span>
+      </button>
+  </div>
+
+  <script>
+      // STATE
+      const ZONES = ['TERAS', 'BAHÇE', 'SALON', 'VIP'];
+      let activeZone = 'TERAS';
+      let activeTable = null;
+      let order = [];
+      const PRODUCTS = [
+          {id: 1, name: "Izgara Köfte", price: 250, color: "bg-orange-500"},
+          {id: 2, name: "Tavuk Şiş", price: 180, color: "bg-amber-500"},
+          {id: 3, name: "Mercimek Çorbası", price: 70, color: "bg-yellow-500"},
+          {id: 4, name: "Çoban Salata", price: 90, color: "bg-green-500"},
+          {id: 5, name: "Kola", price: 40, color: "bg-red-900"},
+          {id: 6, name: "Ayran", price: 30, color: "bg-gray-300"},
+      ];
+
+      // DOM ELEMENTS
+      const elTabs = document.getElementById('tabs-container');
+      const elGrid = document.getElementById('table-grid');
+      const elProducts = document.getElementById('products-grid');
+      const elReceipt = document.getElementById('receipt-list');
+      const elTotal = document.getElementById('total-price');
+
+      function init() {
+          renderTabs();
+          renderTables();
+          renderProducts();
+      }
+
+      function switchView(viewName) {
+          document.getElementById('view-masalar').classList.add('view-hidden');
+          document.getElementById('view-urunler').classList.add('view-hidden');
+          document.getElementById('view-fis').classList.add('view-hidden');
+          
+          document.getElementById('view-' + viewName).classList.remove('view-hidden');
+
+          // Reset Nav colors
+          document.getElementById('nav-masalar').className = "btn-press flex flex-col items-center p-2 text-gray-400";
+          document.getElementById('nav-urunler').className = "btn-press flex flex-col items-center p-2 text-gray-400";
+          document.getElementById('nav-fis').className = "btn-press flex flex-col items-center p-2 text-gray-400";
+
+          // Set active Nav
+          const activeNav = document.getElementById('nav-' + viewName);
+          activeNav.className = activeNav.className.replace('text-gray-400', 'text-[#D32F2F]');
+          
+          if(viewName === 'fis') renderReceipt();
+      }
+
+      function setZone(zone) {
+          activeZone = zone;
+          renderTabs();
+          renderTables();
+      }
+
+      function renderTabs() {
+          let html = '';
+          ZONES.forEach(zone => {
+              const isActive = zone === activeZone;
+              html += `
+              <div onclick="setZone('${zone}')" class="relative px-4 py-3 cursor-pointer whitespace-nowrap btn-press ${isActive ? 'text-white' : ''}">
+                  ${zone}
+                  ${isActive ? '<div class="absolute bottom-0 left-0 w-full h-1 bg-cyan-400 animate-in" style="animation-duration: 200ms;"></div>' : ''}
+              </div>`;
+          });
+          elTabs.innerHTML = html;
+      }
+
+      function openTable(num) {
+          activeTable = num;
+          document.getElementById('active-table-title').innerText = `Masa ${num} Sipariş`;
+          switchView('urunler');
+      }
+
+      function renderTables() {
+          let html = '<div class="grid grid-cols-2 md:grid-cols-3 gap-3">';
+          for(let i=1; i<=18; i++) {
+              const isOccupied = Math.random() > 0.6;
+              const statusText = isOccupied ? 'Dolu' : 'Boş';
+              const dotColor = isOccupied ? 'bg-red-600' : 'bg-teal-400';
+              html += `
+              <div onclick="openTable(${i})" class="card-interactive bg-white rounded-lg p-3 cursor-pointer border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col justify-between h-24 relative overflow-hidden animate-in" style="animation-delay: ${(i-1)*20}ms">
+                  <div class="flex items-center gap-1.5 text-xs font-medium">
+                      <div class="w-2.5 h-2.5 rounded-full ${dotColor}"></div>
+                      <span class="text-gray-600">${statusText}</span>
+                  </div>
+                  <div class="text-center w-full mt-2">
+                      <span class="text-gray-800 font-bold text-lg">Masa ${i}</span>
+                  </div>
+              </div>`;
+          }
+          html += '</div>';
+          elGrid.innerHTML = html;
+      }
+
+      function addProduct(id) {
+          const product = PRODUCTS.find(p => p.id === id);
+          const existing = order.find(o => o.id === id);
+          if(existing) {
+              existing.qty++;
+          } else {
+              order.push({...product, qty: 1});
+          }
+          // Flash effect
+          const card = document.getElementById('prod-'+id);
+          card.style.transform = 'scale(0.9)';
+          setTimeout(() => card.style.transform = 'scale(1)', 150);
+      }
+
+      function renderProducts() {
+          let html = '';
+          PRODUCTS.forEach((p, i) => {
+              html += `
+              <div id="prod-${p.id}" onclick="addProduct(${p.id})" class="card-interactive ${p.color} text-white rounded-xl p-4 cursor-pointer shadow-md flex flex-col justify-between h-32 animate-in" style="animation-delay: ${i*30}ms">
+                  <span class="font-bold text-lg leading-tight">${p.name}</span>
+                  <span class="font-medium bg-black/20 self-start px-2 py-1 rounded-md text-sm">${p.price} TL</span>
+              </div>`;
+          });
+          elProducts.innerHTML = html;
+      }
+
+      function renderReceipt() {
+          if (order.length === 0) {
+              elReceipt.innerHTML = '<div class="text-center text-gray-500 mt-10 font-medium">Henüz sipariş eklenmedi.<br><span class="text-sm">Ürünler sekmesinden ürün ekleyin.</span></div>';
+              elTotal.innerText = '0.00 TL';
+              return;
+          }
+
+          let html = '<div class="flex flex-col gap-3 animate-in">';
+          let total = 0;
+          order.forEach(o => {
+              const sum = o.price * o.qty;
+              total += sum;
+              html += `
+              <div class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                  <div class="flex items-center gap-3">
+                      <div class="bg-gray-100 text-gray-800 font-bold w-8 h-8 rounded-full flex items-center justify-center">${o.qty}x</div>
+                      <span class="font-semibold text-gray-800">${o.name}</span>
+                  </div>
+                  <span class="font-bold text-gray-700">${sum} TL</span>
+              </div>`;
+          });
+          html += '</div>';
+          elReceipt.innerHTML = html;
+          elTotal.innerText = total + ' TL';
+      }
+
+      init();
+  </script>
+</body>
+</html>

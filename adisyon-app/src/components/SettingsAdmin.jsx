@@ -73,42 +73,45 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
               ⬆️ Ayarları ve Menüyü Dışa Aktar
             </button>
 
-            <label className="btn-press bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl shadow-sm font-bold flex-1 text-center cursor-pointer">
-              ⬇️ Config Dosyası Yükle (İçe Aktar)
-              <input type="file" accept=".json" className="hidden" onChange={async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                if (!confirm("DİKKAT: Mevcut menü, ayarlar ve siparişler silinecek ve yüklediğiniz dosyadakiler geçerli olacak. Onaylıyor musunuz?")) {
-                  e.target.value = null;
-                  return;
-                }
+            <button
+              onClick={async () => {
                 try {
-                  const text = await file.text();
+                  let text;
+                  if (isTauri()) {
+                    const { open } = await import('@tauri-apps/plugin-dialog');
+                    const { readTextFile } = await import('@tauri-apps/plugin-fs');
+                    const selected = await open({ filters: [{ name: 'JSON', extensions: ['json'] }], multiple: false });
+                    if (!selected) return;
+                    text = await readTextFile(selected);
+                  } else {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.json';
+                    const file = await new Promise(r => { input.onchange = () => r(input.files[0]); input.click(); });
+                    if (!file) return;
+                    text = await file.text();
+                  }
+                  if (!confirm("DİKKAT: Mevcut menü, ayarlar ve siparişler silinecek ve yüklediğiniz dosyadakiler geçerli olacak. Onaylıyor musunuz?")) return;
                   const data = JSON.parse(text);
                   const mutations = Object.keys(data).map(key => ({
-                    action: 'set',
-                    collection: key,
-                    id: null,
-                    data: data[key]
+                    action: 'set', collection: key, id: null, data: data[key]
                   }));
-                  
-                  const apiInvoke = async (command, args = {}) => {
-                    if (isTauri()) return await invoke(command, args);
-                    let url = '/api/' + (command === 'mutate_db' ? 'mutate' : 'db');
-                    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(args) });
+                  if (isTauri()) {
+                    await invoke('mutate_db', { mutations });
+                  } else {
+                    const res = await fetch('/api/mutate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mutations }) });
                     if (!res.ok) throw new Error(await res.text());
-                    return await res.json();
-                  };
-                  
-                  await apiInvoke('mutate_db', { mutations });
-                  alert("Config dosyası başarıyla yüklendi! Lütfen programı yeniden başlatın.");
+                  }
+                  alert("Config dosyası başarıyla yüklendi! Program yeniden başlatılıyor.");
                   window.location.reload();
                 } catch (err) {
-                  alert("HATA Detayı: " + (err.message || err));
+                  if (err) alert("HATA: " + (err.message || err));
                 }
-                e.target.value = null;
-              }} />
-            </label>
+              }}
+              className="btn-press bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl shadow-sm font-bold flex-1 text-center cursor-pointer"
+            >
+              ⬇️ Config Dosyası Yükle (İçe Aktar)
+            </button>
           </div>
           <p className="text-xs text-gray-500 mt-3">Bu özelliği kullanarak menülerinizi flash belleğe yedekleyebilir veya başka bir bilgisayara birebir aktarabilirsiniz.</p>
         </div>

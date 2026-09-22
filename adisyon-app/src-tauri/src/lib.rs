@@ -125,6 +125,7 @@ fn get_local_ip() -> Result<String, String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             let app_data_dir = app.path().app_data_dir().unwrap();
             fs::create_dir_all(&app_data_dir).unwrap();
