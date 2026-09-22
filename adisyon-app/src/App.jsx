@@ -1,11 +1,11 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { useState, useEffect, useCallback } from 'react';
 import { Cloud, CloudOff, Server } from 'lucide-react';
 
 
 
 const apiInvoke = async (command, args = {}) => {
-  if ((window.__TAURI_INTERNALS__ !== undefined)) {
+  if (isTauri()) {
     return await invoke(command, args);
   } else {
     let url = '/api/' + (command === 'get_db' ? 'db' : (command === 'mutate_db' ? 'mutate' : 'print'));
