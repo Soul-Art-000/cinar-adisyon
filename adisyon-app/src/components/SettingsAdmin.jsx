@@ -6,7 +6,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
   const [localIp, setLocalIp] = useState('');
   const [hostname, setHostname] = useState('...');
   useEffect(() => {
-    if (window.__TAURI__) {
+    if ((window.__TAURI_INTERNALS__ !== undefined)) {
       invoke('get_local_ip').then(ip => { console.log('IP is:', ip); setLocalIp(ip); }).catch(console.error);
       invoke('get_hostname').then(setHostname).catch(console.error);
     }
@@ -58,7 +58,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
             <button
               onClick={async () => {
                 try {
-                  const db = window.__TAURI__ ? await invoke('get_db') : await fetch('/api/db', {method: 'POST'}).then(r => r.json());
+                  const db = (window.__TAURI_INTERNALS__ !== undefined) ? await invoke('get_db') : await fetch('/api/db', {method: 'POST'}).then(r => r.json());
                   const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a');
@@ -94,7 +94,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
                     }));
                     
                     const apiInvoke = async (command, args = {}) => {
-                      if (window.__TAURI__) return await invoke(command, args);
+                      if ((window.__TAURI_INTERNALS__ !== undefined)) return await invoke(command, args);
                       let url = '/api/' + (command === 'mutate_db' ? 'mutate' : 'db');
                       const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(args) });
                       if (!res.ok) throw new Error(await res.text());

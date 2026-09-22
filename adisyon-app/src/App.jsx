@@ -5,7 +5,7 @@ import { Cloud, CloudOff, Server } from 'lucide-react';
 
 
 const apiInvoke = async (command, args = {}) => {
-  if (window.__TAURI__) {
+  if ((window.__TAURI_INTERNALS__ !== undefined)) {
     return await invoke(command, args);
   } else {
     let url = '/api/' + (command === 'get_db' ? 'db' : (command === 'mutate_db' ? 'mutate' : 'print'));
