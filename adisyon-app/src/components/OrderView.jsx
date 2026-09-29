@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { useState } from 'react';
 import { Cloud, ChevronLeft, Printer, Plus, Minus, X, Package, Percent, Banknote, CreditCard, Book } from 'lucide-react';
 
@@ -78,7 +78,7 @@ export default function OrderView({ table, order, products, categories, customer
       receiptText += `--------------------------------\n\n\n`;
       
       // Print and mark as sent
-      (window.__TAURI__ ? invoke('print_receipt', { printerName, receiptText }) : fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) }))
+      (isTauri() ? invoke('print_receipt', { printerName, receiptText }) : fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) }))
         .then(() => onMarkAsSent())
         .catch(console.error);
         
@@ -97,7 +97,7 @@ export default function OrderView({ table, order, products, categories, customer
 
       receiptText += `--------------------------------\n\n\n`;
       
-      if (window.__TAURI__) {
+      if (isTauri()) {
         invoke('print_receipt', { printerName, receiptText }).catch(console.error);
       } else {
         fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) }).catch(console.error);

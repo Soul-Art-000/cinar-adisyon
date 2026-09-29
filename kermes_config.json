@@ -1,0 +1,454 @@
+{
+  "settings": {
+    "zones": [
+      "BAHÇE",
+      "SALON",
+      "TERAS"
+    ],
+    "categories": [
+      "KÖFTE",
+      "DÖNER",
+      "KEBAP",
+      "PIDE",
+      "TANTUNI",
+      "TATLI",
+      "MANTI",
+      "SARMA",
+      "GÖZLEME",
+      "İÇLI KÖFTE",
+      "ÇIĞKÖFTE",
+      "İÇECEK",
+      "LAHMACUN",
+      "PIZZA",
+      "FAST FOOD",
+      "TAVUK FC",
+      "ÇORBA"
+    ]
+  },
+  "products": [
+    {
+      "id": "p_17906305695260ho0a",
+      "name": "Köfte Porsiyon",
+      "category": "KÖFTE",
+      "price": 240,
+      "color": "bg-red-500"
+    },
+    {
+      "id": "p_17906305695269nkn0",
+      "name": "Köfte Ekmek-Dürüm",
+      "category": "KÖFTE",
+      "price": 160,
+      "color": "bg-red-500"
+    },
+    {
+      "id": "p_1790630569526v5oji",
+      "name": "Cağ Döner (1kg)",
+      "category": "DÖNER",
+      "price": 1600,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526o9s39",
+      "name": "Cağ Döner Porsiyon",
+      "category": "DÖNER",
+      "price": 240,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526iv4pw",
+      "name": "Cağ Döner (2 şiş cağ)",
+      "category": "DÖNER",
+      "price": 280,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526ndhhb",
+      "name": "Et Döner (1kg)",
+      "category": "DÖNER",
+      "price": 1750,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_179063056952640u5c",
+      "name": "Et Döner Porsiyon",
+      "category": "DÖNER",
+      "price": 220,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526mt6yd",
+      "name": "Et Döner Ekmek-Dürüm",
+      "category": "DÖNER",
+      "price": 175,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526ifk3z",
+      "name": "Tavuk Döner (porsiyon)",
+      "category": "DÖNER",
+      "price": 190,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526mleio",
+      "name": "Tavuk Döner (kg)",
+      "category": "DÖNER",
+      "price": 1100,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526akhau",
+      "name": "Tavuk Döner Ekmek-Dürüm",
+      "category": "DÖNER",
+      "price": 160,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526srzc5",
+      "name": "Tavuk Şiş Porsiyon",
+      "category": "KEBAP",
+      "price": 210,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526n59ff",
+      "name": "Tavuk Şiş Dürüm",
+      "category": "KEBAP",
+      "price": 200,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526qcfqb",
+      "name": "Adana Şiş Porsiyon",
+      "category": "KEBAP",
+      "price": 260,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526xgdtg",
+      "name": "Adana Şiş Dürüm",
+      "category": "KEBAP",
+      "price": 270,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526q8org",
+      "name": "Kuzu Şiş",
+      "category": "KEBAP",
+      "price": 300,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526js7bf",
+      "name": "Kuzu Pirzola",
+      "category": "KEBAP",
+      "price": 380,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526sgbkv",
+      "name": "Tavuk Kanat",
+      "category": "KEBAP",
+      "price": 200,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_179063056952660xf6",
+      "name": "Tavuk Pirzola",
+      "category": "KEBAP",
+      "price": 220,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526n4fc8",
+      "name": "Kuzu Beyti",
+      "category": "KEBAP",
+      "price": 380,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526s0i3m",
+      "name": "İskender",
+      "category": "DÖNER",
+      "price": 350,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526qgfn6",
+      "name": "Pideli Köfte",
+      "category": "PIDE",
+      "price": 300,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_179063056952615ux9",
+      "name": "Tantuni Tavuk",
+      "category": "TANTUNI",
+      "price": 160,
+      "color": "bg-purple-500"
+    },
+    {
+      "id": "p_1790630569526jfqxo",
+      "name": "Baklava Porsiyon",
+      "category": "TATLI",
+      "price": 100,
+      "color": "bg-pink-500"
+    },
+    {
+      "id": "p_1790630569526wxbxi",
+      "name": "Baklava (1kg)",
+      "category": "TATLI",
+      "price": 450,
+      "color": "bg-pink-500"
+    },
+    {
+      "id": "p_1790630569526w48uf",
+      "name": "Mantı Porsiyon",
+      "category": "MANTI",
+      "price": 150,
+      "color": "bg-indigo-500"
+    },
+    {
+      "id": "p_1790630569526vxuoc",
+      "name": "Mantı (1kg)",
+      "category": "MANTI",
+      "price": 360,
+      "color": "bg-indigo-500"
+    },
+    {
+      "id": "p_1790630569526bq0x5",
+      "name": "Sarma Porsiyon",
+      "category": "SARMA",
+      "price": 80,
+      "color": "bg-teal-500"
+    },
+    {
+      "id": "p_1790630569526d0x8m",
+      "name": "Sarma (1kg)",
+      "category": "SARMA",
+      "price": 340,
+      "color": "bg-teal-500"
+    },
+    {
+      "id": "p_1790630569526kmmt9",
+      "name": "Gözleme",
+      "category": "GÖZLEME",
+      "price": 80,
+      "color": "bg-orange-500"
+    },
+    {
+      "id": "p_1790630569526jyby9",
+      "name": "İçli Köfte",
+      "category": "İÇLI KÖFTE",
+      "price": 70,
+      "color": "bg-cyan-500"
+    },
+    {
+      "id": "p_1790630569526a2pin",
+      "name": "Çiğ Köfte (1kg)",
+      "category": "ÇIĞKÖFTE",
+      "price": 350,
+      "color": "bg-emerald-500"
+    },
+    {
+      "id": "p_1790630569526i24fk",
+      "name": "Çiğ Köfte Porsiyon",
+      "category": "ÇIĞKÖFTE",
+      "price": 100,
+      "color": "bg-emerald-500"
+    },
+    {
+      "id": "p_179063056952652jr7",
+      "name": "Çiğ Köfte Beyti Sarma",
+      "category": "ÇIĞKÖFTE",
+      "price": 110,
+      "color": "bg-emerald-500"
+    },
+    {
+      "id": "p_1790630569526f9bjb",
+      "name": "Çiğ Köfte Dürüm",
+      "category": "ÇIĞKÖFTE",
+      "price": 60,
+      "color": "bg-emerald-500"
+    },
+    {
+      "id": "p_1790630569526uxma4",
+      "name": "Ayran (1 Litre)",
+      "category": "İÇECEK",
+      "price": 80,
+      "color": "bg-rose-500"
+    },
+    {
+      "id": "p_1790630569526isbl8",
+      "name": "Ayran 250 cc",
+      "category": "İÇECEK",
+      "price": 30,
+      "color": "bg-rose-500"
+    },
+    {
+      "id": "p_1790630569526yvcbi",
+      "name": "Limonata (1 Litre)",
+      "category": "İÇECEK",
+      "price": 80,
+      "color": "bg-rose-500"
+    },
+    {
+      "id": "p_1790630569526go2wy",
+      "name": "Limonata 250 cc",
+      "category": "İÇECEK",
+      "price": 35,
+      "color": "bg-rose-500"
+    },
+    {
+      "id": "p_1790630569526eh9gi",
+      "name": "Osmanlı Şerbeti (1 Litre)",
+      "category": "İÇECEK",
+      "price": 80,
+      "color": "bg-rose-500"
+    },
+    {
+      "id": "p_1790630569526fkemv",
+      "name": "Osmanlı Şerbeti 250 cc",
+      "category": "İÇECEK",
+      "price": 35,
+      "color": "bg-rose-500"
+    },
+    {
+      "id": "p_17906305695265od8c",
+      "name": "Pide Kıymalı",
+      "category": "PIDE",
+      "price": 180,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_1790630569526p2o31",
+      "name": "Pide Kaşarlı",
+      "category": "PIDE",
+      "price": 180,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_1790630569526xbygp",
+      "name": "Pide Kuşbaşı",
+      "category": "PIDE",
+      "price": 210,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_17906305695261oplt",
+      "name": "Pide Kaşar-Kıyma",
+      "category": "PIDE",
+      "price": 190,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_1790630569526v14js",
+      "name": "Pide Kaşar-Kuşbaşı",
+      "category": "PIDE",
+      "price": 210,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_17906305695264h98o",
+      "name": "Pide Sucuklu",
+      "category": "PIDE",
+      "price": 210,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_1790630569526zedqf",
+      "name": "Kümbet Pide",
+      "category": "PIDE",
+      "price": 230,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_1790630569526er6vr",
+      "name": "Lahmacun",
+      "category": "LAHMACUN",
+      "price": 90,
+      "color": "bg-red-500"
+    },
+    {
+      "id": "p_17906305695266e70t",
+      "name": "Pizza Orta (Vejeteryan)",
+      "category": "PIZZA",
+      "price": 180,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526lzh2h",
+      "name": "Pizza Orta (Karışık)",
+      "category": "PIZZA",
+      "price": 230,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526rsir6",
+      "name": "Pizza Büyük (Vejeteryan)",
+      "category": "PIZZA",
+      "price": 190,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526klix2",
+      "name": "Pizza Büyük (Karışık)",
+      "category": "PIZZA",
+      "price": 260,
+      "color": "bg-blue-500"
+    },
+    {
+      "id": "p_1790630569526lmqjg",
+      "name": "Kumru",
+      "category": "FAST FOOD",
+      "price": 170,
+      "color": "bg-green-500"
+    },
+    {
+      "id": "p_1790630569526tc7k9",
+      "name": "Finger Menü",
+      "category": "TAVUK FC",
+      "price": 220,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_179063056952690qwp",
+      "name": "Special Karışık Menü",
+      "category": "TAVUK FC",
+      "price": 240,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_17906305695268h100",
+      "name": "Mega Kova Menü",
+      "category": "TAVUK FC",
+      "price": 540,
+      "color": "bg-yellow-500"
+    },
+    {
+      "id": "p_1790630569526t7udu",
+      "name": "Etli Çorba",
+      "category": "ÇORBA",
+      "price": 180,
+      "color": "bg-purple-500"
+    },
+    {
+      "id": "p_17906305695261rdim",
+      "name": "Tavuk Çorba",
+      "category": "ÇORBA",
+      "price": 150,
+      "color": "bg-purple-500"
+    },
+    {
+      "id": "p_17906305695266mfch",
+      "name": "Diğer Çorba",
+      "category": "ÇORBA",
+      "price": 120,
+      "color": "bg-purple-500"
+    }
+  ],
+  "tables": [],
+  "orders": [],
+  "sales": [],
+  "veresiye": []
+}

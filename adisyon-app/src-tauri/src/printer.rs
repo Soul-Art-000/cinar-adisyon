@@ -1,6 +1,5 @@
 use std::process::Command;
 
-
 #[tauri::command]
 pub fn get_printers() -> Result<Vec<String>, String> {
     let mut printers = Vec::new();
@@ -11,7 +10,10 @@ pub fn get_printers() -> Result<Vec<String>, String> {
             let out_str = String::from_utf8_lossy(&output.stdout);
             for line in out_str.lines() {
                 if let Some(printer) = line.split_whitespace().next() {
-                    printers.push(printer.to_string());
+                    // lpstat -a format: "ACLAS_PP7_M3, accepting requests since..."
+                    // The comma is NOT whitespace, so we must strip it explicitly.
+                    let clean = printer.trim_matches(',').trim().to_string();
+                    if !clean.is_empty() { printers.push(clean); }
                 }
             }
         }
@@ -40,77 +42,74 @@ pub fn get_printers() -> Result<Vec<String>, String> {
 pub fn print_receipt(printer_name: String, receipt_text: String) -> Result<(), String> {
     use std::fs::File;
     use std::io::Write;
-    
-    // ESC/POS raw bytes preparation
+
+    // Debug log — writes to /tmp/adisyon_debug.log so we can see exactly what's happening
+    let log_path = "/tmp/adisyon_debug.log";
+    let _ = std::fs::write(
+        log_path,
+        format!("printer_name bytes: {:?}\nprinter_name: '{}'\n", printer_name.as_bytes(), printer_name),
+    );
+
+    // ESC/POS raw bytes
     let mut raw_data = Vec::new();
-    
-    // Initialize printer (ESC @)
-    raw_data.extend_from_slice(&[0x1B, 0x40]);
-    
-    // Convert text to UTF-8 or ASCII (Thermal printers usually use specific codepages, 
-    // but for simple text standard bytes often work if Turkish characters are mapped or avoided, 
-    // or we just send UTF-8 if the printer supports it)
-    
-    // Align center for title
-    raw_data.extend_from_slice(&[0x1B, 0x61, 0x01]);
+    raw_data.extend_from_slice(&[0x1B, 0x40]);          // ESC @ — init
+    raw_data.extend_from_slice(&[0x1B, 0x61, 0x01]);    // center
     raw_data.extend_from_slice(b"CINAR ADISYON\n\n");
-    
-    // Align left for body
-    raw_data.extend_from_slice(&[0x1B, 0x61, 0x00]);
+    raw_data.extend_from_slice(&[0x1B, 0x61, 0x00]);    // left
     raw_data.extend_from_slice(receipt_text.as_bytes());
     raw_data.extend_from_slice(b"\n\n");
-    
-    // Cut paper (GS V 0)
-    raw_data.extend_from_slice(&[0x1D, 0x56, 0x00]);
-    
-    // Write to temp file
-    let temp_dir = std::env::temp_dir();
-    let file_path = temp_dir.join("receipt.bin");
+    raw_data.extend_from_slice(&[0x1D, 0x56, 0x00]);    // GS V — cut
+
+    let file_path = std::path::PathBuf::from("/tmp/adisyon_receipt.bin");
     let mut file = File::create(&file_path).map_err(|e| e.to_string())?;
     file.write_all(&raw_data).map_err(|e| e.to_string())?;
     file.flush().map_err(|e| e.to_string())?;
-    drop(file); // Ensure file is closed before lpr reads it
-    
-    // Send to printer
+    drop(file);
+
     #[cfg(target_os = "macos")]
     {
-        // Try raw printing first, bypassing 'sh -c' to avoid quote escaping issues
-        let mut output = Command::new("/usr/bin/lpr")
+        use std::os::unix::fs::PermissionsExt;
+        let _ = std::fs::set_permissions(&file_path, std::fs::Permissions::from_mode(0o666));
+
+        let clean_name = printer_name.trim().trim_matches(',').trim().to_string();
+
+        let output = Command::new("/usr/bin/lpr")
             .arg("-P")
-            .arg(&printer_name)
-            .arg("-o")
-            .arg("raw")
+            .arg(&clean_name)
             .arg(&file_path)
             .output()
             .map_err(|e| e.to_string())?;
-            
-        // Fallback to normal printing if raw mode fails
+
+        // Append result to debug log
+        let _ = std::fs::write(
+            log_path,
+            format!(
+                "printer_name bytes: {:?}\nprinter_name: '{}'\nclean_name: '{}'\nstatus: {}\nstdout: {}\nstderr: {}\n",
+                printer_name.as_bytes(),
+                printer_name,
+                clean_name,
+                output.status,
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr),
+            ),
+        );
+
         if !output.status.success() {
-            output = Command::new("/usr/bin/lpr")
-                .arg("-P")
-                .arg(&printer_name)
-                .arg(&file_path)
-                .output()
-                .map_err(|e| e.to_string())?;
-            
-            if !output.status.success() {
-                let stderr = String::from_utf8_lossy(&output.stderr);
-                return Err(format!("LPR Hatası: {}", stderr));
-            }
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            return Err(format!("LPR Hatası (yazıcı: '{}'): stderr={} stdout={}", clean_name, stderr.trim(), stdout.trim()));
         }
     }
-    
+
     #[cfg(target_os = "windows")]
     {
-        // For Windows, printing raw bytes usually requires a special tool or sharing the printer 
-        // and copying to the UNC path: copy receipt.bin \\localhost\PrinterName
+        let printer_unc = format!("\\\\localhost\\{}", printer_name.trim());
         let status = Command::new("cmd")
-            .args(&["/C", "copy", "/B", file_path.to_str().unwrap(), &format!("\\\\localhost\\{}", printer_name)])
+            .args(&["/C", "copy", "/B", file_path.to_str().ok_or("Invalid path")?, &printer_unc])
             .status()
             .map_err(|e| e.to_string())?;
-            
         if !status.success() {
-            return Err("Yazdırma işlemi başarısız oldu (Windows Copy hatası)".to_string());
+            return Err("Windows yazdırma başarısız oldu".to_string());
         }
     }
 
