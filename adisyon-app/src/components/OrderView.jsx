@@ -282,6 +282,7 @@ export default function OrderView({ table, order, products, categories, customer
               MUTFAĞA GÖNDER
             </button>
             <button
+              onClick={() => printReceipt('customer')}
               disabled={!hasItems}
               className="w-full bg-blue-500 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-3.5 rounded-xl btn-press text-base shadow-md transition-colors flex items-center justify-center gap-2"
             >
