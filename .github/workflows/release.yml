@@ -38,6 +38,6 @@ jobs:
           projectPath: ./adisyon-app
           tagName: v1.0.${{ github.run_number }}
           releaseName: 'Adisyon App - Sürüm 1.0.${{ github.run_number }}'
-          releaseBody: 'Adisyon sistemi kurulum dosyaları. AI tarafından üretilmiştir.'
+          releaseBody: '${{ github.event.head_commit.message }}'
           releaseDraft: false
           prerelease: false
