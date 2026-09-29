@@ -68,19 +68,35 @@ pub fn print_receipt(printer_name: String, receipt_text: String) -> Result<(), S
     let file_path = temp_dir.join("receipt.bin");
     let mut file = File::create(&file_path).map_err(|e| e.to_string())?;
     file.write_all(&raw_data).map_err(|e| e.to_string())?;
+    file.flush().map_err(|e| e.to_string())?;
+    drop(file); // Ensure file is closed before lpr reads it
     
     // Send to printer
     #[cfg(target_os = "macos")]
     {
-        let lpr_cmd = format!("/usr/bin/lpr -P \"{}\" -l \"{}\"", printer_name, file_path.display());
-        let status = Command::new("sh")
-            .arg("-c")
-            .arg(&lpr_cmd)
-            .status()
+        // Try raw printing first, bypassing 'sh -c' to avoid quote escaping issues
+        let mut output = Command::new("/usr/bin/lpr")
+            .arg("-P")
+            .arg(&printer_name)
+            .arg("-o")
+            .arg("raw")
+            .arg(&file_path)
+            .output()
             .map_err(|e| e.to_string())?;
             
-        if !status.success() {
-            return Err("Yazdırma işlemi başarısız oldu (lpr hatası)".to_string());
+        // Fallback to normal printing if raw mode fails
+        if !output.status.success() {
+            output = Command::new("/usr/bin/lpr")
+                .arg("-P")
+                .arg(&printer_name)
+                .arg(&file_path)
+                .output()
+                .map_err(|e| e.to_string())?;
+            
+            if !output.status.success() {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                return Err(format!("LPR Hatası: {}", stderr));
+            }
         }
     }
     
