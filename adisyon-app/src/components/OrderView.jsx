@@ -52,56 +52,33 @@ export default function OrderView({ table, order, products, categories, customer
   
   
   
-  const printReceipt = (type = 'customer') => {
+  const printReceipt = () => {
     const printerName = localStorage.getItem('adisyon_printer');
     if (!printerName) return alert("Ayarlardan yazici secilmemis!");
 
-    let receiptText = ``;
-    
-    if (type === 'kitchen') {
-      const unsentItems = order.items.filter(i => !i.sentToKitchen);
-      if (unsentItems.length === 0) {
-        return alert("Mutfaga gonderilecek yeni urun yok!");
-      }
-      
-      receiptText += `*** MUTFAK SIPARISI ***\n\n`;
-      receiptText += `MASA: ${table.name}\n`;
-      receiptText += `TARIH: ${new Date().toLocaleString('tr-TR')}\n`;
-      receiptText += `--------------------------------\n`;
-      
-      unsentItems.forEach(item => {
-        const p = products.find(x => x.id === item.productId);
-        if (p) {
-          receiptText += `${item.qty}x ${p.name} ${item.ikram ? '(IKRAM)' : ''}\n`;
-        }
-      });
-      receiptText += `--------------------------------\n\n\n`;
-      
-      // Print and mark as sent
-      (isTauri() ? invoke('print_receipt', { printerName, receiptText }) : fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) }))
-        .then(() => onMarkAsSent())
-        .catch(console.error);
-        
-    } else {
-      receiptText += `CINAR\n\n`;
-      receiptText += `MASA: ${table.name}\n`;
-      receiptText += `TARIH: ${new Date().toLocaleString('tr-TR')}\n`;
-      receiptText += `--------------------------------\n`;
-      
-      order.items.forEach(item => {
-        const p = products.find(x => x.id === item.productId);
-        if (p) {
-          receiptText += `${item.qty}x ${p.name} ${item.ikram ? '(IKRAM)' : ''}\n`;
-        }
-      });
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const dateStr = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-      receiptText += `--------------------------------\n\n\n`;
-      
-      if (isTauri()) {
-        invoke('print_receipt', { printerName, receiptText }).catch(console.error);
-      } else {
-        fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) }).catch(console.error);
-      }
+    let receiptText = '';
+    receiptText += `================================\n`;
+    receiptText += `        CINAR ADISYON\n`;
+    receiptText += `================================\n`;
+    receiptText += `MASA : ${table.name}\n`;
+    receiptText += `TARIH: ${dateStr}\n`;
+    receiptText += `--------------------------------\n`;
+
+    order.items.forEach(item => {
+      const p = products.find(x => x.id === item.productId);
+      if (p) receiptText += `${item.qty}x ${p.name}${item.ikram ? ' (IKRAM)' : ''}\n`;
+    });
+
+    receiptText += `--------------------------------\n\n\n`;
+
+    if (isTauri()) {
+      invoke('print_receipt', { printerName, receiptText }).catch(e => alert('Yazici hatasi: ' + e));
+    } else {
+      fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) }).catch(console.error);
     }
   };
 
@@ -274,15 +251,8 @@ export default function OrderView({ table, order, products, categories, customer
                 <span className="font-bold text-2xl text-primary">{finalTotal} TL</span>
               </div>
             </div>
-                        <button
-              onClick={() => printReceipt('kitchen')}
-              disabled={!hasItems || order.items.every(i => i.sentToKitchen)}
-              className="w-full bg-orange-500 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-3.5 rounded-xl btn-press text-base shadow-md transition-colors flex items-center justify-center gap-2 mb-2"
-            >
-              MUTFAĞA GÖNDER
-            </button>
             <button
-              onClick={() => printReceipt('customer')}
+              onClick={printReceipt}
               disabled={!hasItems}
               className="w-full bg-blue-500 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-3.5 rounded-xl btn-press text-base shadow-md transition-colors flex items-center justify-center gap-2"
             >
