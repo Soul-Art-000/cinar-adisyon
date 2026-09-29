@@ -1,6 +1,5 @@
 import { TrendingUp, Banknote, CreditCard, ShoppingBag } from 'lucide-react';
-
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, isTauri } from "@tauri-apps/api/core";
 export default function CiroView({ sales, onEndOfDay }) {
   const nakitTotal = sales.filter(s => s.paymentMethod === 'nakit').reduce((a, s) => a + s.finalTotal, 0);
   const kartTotal  = sales.filter(s => s.paymentMethod === 'kart').reduce((a, s) => a + s.finalTotal, 0);
@@ -21,40 +20,30 @@ export default function CiroView({ sales, onEndOfDay }) {
   
   const handlePrintZReport = () => {
     const printerName = localStorage.getItem('adisyon_printer');
-    if (!printerName) {
-      onEndOfDay();
-      return;
+    if (!printerName) { onEndOfDay(); return; }
+
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const dateStr = `${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+    let receiptText = '*** GUN SONU (Z-RAPORU) ***\n\n';
+    receiptText += 'TARIH: ' + dateStr + '\n';
+    receiptText += '--------------------------------\n';
+    receiptText += 'TOPLAM SATIS:             ' + sales.length + '\n';
+    receiptText += 'NAKIT KASA:               ' + nakitTotal + ' TL\n';
+    receiptText += 'KREDI KARTI:              ' + kartTotal + ' TL\n';
+    receiptText += 'VERESIYE (ACIK):          ' + veresiyeTotal + ' TL\n';
+    receiptText += '--------------------------------\n';
+    receiptText += 'GENEL TOPLAM Ciro:        ' + grandTotal + ' TL\n\n\n';
+
+    if (isTauri()) {
+      invoke('print_receipt', { printerName, receiptText })
+        .then(() => onEndOfDay())
+        .catch(e => { alert('Yazdirma hatasi: ' + e); onEndOfDay(); });
+    } else {
+      fetch('/api/print', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ printerName, receiptText }) })
+        .catch(console.error).finally(() => onEndOfDay());
     }
-    
-    let receiptText = `*** GUN SONU (Z-RAPORU) ***
-
-`;
-    receiptText += `TARIH: ${new Date().toLocaleString('tr-TR')}
-`;
-    receiptText += `--------------------------------
-`;
-    receiptText += `TOPLAM SATIS:             ${sales.length}
-`;
-    receiptText += `NAKIT KASA:               ${nakitTotal} TL
-`;
-    receiptText += `KREDI KARTI:              ${kartTotal} TL
-`;
-    receiptText += `VERESIYE (ACIK):          ${veresiyeTotal} TL
-`;
-    receiptText += `--------------------------------
-`;
-    receiptText += `GENEL TOPLAM Ciro:        ${grandTotal} TL
-
-
-`;
-    
-    invoke('print_receipt', { printerName, receiptText })
-      .then(() => onEndOfDay())
-      .catch(e => {
-        console.error(e);
-        alert("Yazdirma hatasi: " + e);
-        onEndOfDay();
-      });
   };
 
   return (

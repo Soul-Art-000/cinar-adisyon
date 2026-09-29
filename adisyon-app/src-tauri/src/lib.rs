@@ -2,7 +2,6 @@ mod printer;
 mod server;
 use std::fs;
 use std::path::PathBuf;
-use std::sync::Mutex;
 use tauri::Manager;
 use serde_json::Value;
 
@@ -13,13 +12,13 @@ struct AppState {
 
 #[tauri::command]
 fn get_db(state: tauri::State<AppState>) -> Result<Value, String> {
-    let cache = state.db_cache.lock().unwrap();
+    let cache = state.db_cache.lock().map_err(|e| e.to_string())?;
     Ok(cache.clone())
 }
 
 #[tauri::command]
 fn mutate_db(state: tauri::State<AppState>, mutations: Vec<Value>) -> Result<(), String> {
-    let mut cache = state.db_cache.lock().unwrap();
+    let mut cache = state.db_cache.lock().map_err(|e| e.to_string())?;
     
     for m in mutations {
         let action = m["action"].as_str().unwrap_or("");
@@ -77,34 +76,6 @@ fn mutate_db(state: tauri::State<AppState>, mutations: Vec<Value>) -> Result<(),
     Ok(())
 }
 
-fn init_db(app: &mut tauri::App) -> AppState {
-    let app_dir = app.path().app_data_dir().unwrap();
-    fs::create_dir_all(&app_dir).unwrap();
-    let db_path = app_dir.join("database.json");
-
-    let db_content = if db_path.exists() {
-        fs::read_to_string(&db_path).unwrap_or_else(|_| "{}".to_string())
-    } else {
-        // Init default DB
-        let default_db = r#"{
-            "settings": { "zones": ["BAHÇE"], "categories": ["GIDA", "İÇECEKLER"] },
-            "tables": [],
-            "orders": [],
-            "products": [],
-            "sales": [],
-            "veresiye": []
-        }"#;
-        fs::write(&db_path, default_db).unwrap();
-        default_db.to_string()
-    };
-
-    let parsed_db: Value = serde_json::from_str(&db_content).unwrap_or_else(|_| serde_json::json!({}));
-    
-    AppState {
-        db_path,
-        db_cache: std::sync::Arc::new(std::sync::Mutex::new(parsed_db)),
-    }
-}
 
 #[tauri::command]
 fn get_hostname() -> Result<String, String> {

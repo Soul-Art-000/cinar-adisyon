@@ -18,7 +18,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
   const [selectedPrinter, setSelectedPrinter] = useState(localStorage.getItem('adisyon_printer') || '');
 
   useEffect(() => {
-    invoke('get_printers').then(setPrinters).catch(console.error);
+    if (isTauri()) invoke('get_printers').then(setPrinters).catch(console.error);
   }, []);
 
   const handleSelectPrinter = (p) => {
