@@ -16,6 +16,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
   const [newCat, setNewCat] = useState('');
   const [printers, setPrinters] = useState([]);
   const [selectedPrinter, setSelectedPrinter] = useState(localStorage.getItem('adisyon_printer') || '');
+  const [kasaIp, setKasaIp] = useState(localStorage.getItem('kasaIp') || '');
 
   useEffect(() => {
     if (isTauri()) invoke('get_printers').then(setPrinters).catch(console.error);
@@ -144,6 +145,46 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
           <p className="text-xs text-gray-500 mt-3">Bilgisayara bağlı (USB) bir yazıcı seçtiğinizde siparişler ödendiğinde otomatik fiş basılacaktır.</p>
         </div>
 
+        {/* KASAYA BAĞLAN (MOBİL İÇİN) */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 md:col-span-2">
+          <h2 className="font-bold text-gray-700 mb-4 text-base uppercase tracking-wide flex items-center gap-2">
+            🌐 Kasa'ya Bağlan (Mobil/Tablet Senkronizasyonu)
+          </h2>
+          <div className="flex gap-4 items-center">
+            <input
+              type="text"
+              value={kasaIp}
+              onChange={e => setKasaIp(e.target.value)}
+              placeholder="Örn: 192.168.1.42"
+              className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 bg-gray-50"
+            />
+            <button
+              onClick={() => {
+                localStorage.setItem('kasaIp', kasaIp);
+                alert('Kasa IP kaydedildi. Uygulama yeniden başlatılıyor.');
+                window.location.reload();
+              }}
+              className="btn-press bg-primary text-white px-6 py-3 rounded-xl shadow-sm"
+            >
+              Kaydet ve Bağlan
+            </button>
+            <button
+              onClick={() => {
+                setKasaIp('');
+                localStorage.removeItem('kasaIp');
+                alert('Bağlantı kesildi. Çevrimdışı (yerel) moda geçiliyor.');
+                window.location.reload();
+              }}
+              className="btn-press bg-red-500 text-white px-6 py-3 rounded-xl shadow-sm"
+            >
+              Bağlantıyı Kes
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-3">
+            Eğer bu cihazı sadece bir garson tableti/telefonu olarak kullanacaksanız, ana bilgisayarın (Kasa) IP adresini buraya girin. 
+            Böylece tüm siparişler Kasa ile senkronize olur ve Kasa'dan yazdırılır. Çevrimdışı kullanmak için boş bırakın.
+          </p>
+        </div>
 
         {/* MASA BÖLGELERİ */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">

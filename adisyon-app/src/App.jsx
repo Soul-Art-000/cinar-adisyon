@@ -5,17 +5,36 @@ import { Cloud, CloudOff, Server } from 'lucide-react';
 
 
 const apiInvoke = async (command, args = {}) => {
+  const kasaIp = localStorage.getItem('kasaIp');
+  
+  if (kasaIp && kasaIp.trim() !== '') {
+    // Kasa'ya yönlendir (Hem Tauri'de hem Web'de geçerli)
+    const baseUrl = `http://${kasaIp.trim()}:3001`;
+    let url = baseUrl + '/api/' + (command === 'get_db' ? 'db' : (command === 'mutate_db' ? 'mutate' : 'print'));
+    const res = await fetch(url, {
+      method: command === 'get_db' ? 'GET' : 'POST', // get_db can be GET or POST, but server handles GET/POST, let's keep POST for consistency with existing or change if needed. Wait, server.rs line 34 just checks path `if path == "/api/db"`.
+      headers: { 'Content-Type': 'application/json' },
+      body: command === 'get_db' ? undefined : JSON.stringify(args)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    
+    // server.rs returns raw db json for db, but string for mutate/print. Let's handle json parsing
+    const text = await res.text();
+    try { return JSON.parse(text); } catch(e) { return text; }
+  }
+
   if (isTauri()) {
     return await invoke(command, args);
   } else {
     let url = '/api/' + (command === 'get_db' ? 'db' : (command === 'mutate_db' ? 'mutate' : 'print'));
     const res = await fetch(url, {
-      method: 'POST',
+      method: command === 'get_db' ? 'GET' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(args)
+      body: command === 'get_db' ? undefined : JSON.stringify(args)
     });
     if (!res.ok) throw new Error(await res.text());
-    return await res.json();
+    const text = await res.text();
+    try { return JSON.parse(text); } catch(e) { return text; }
   }
 };
 
