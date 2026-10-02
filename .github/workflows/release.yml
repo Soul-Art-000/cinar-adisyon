@@ -41,3 +41,44 @@ jobs:
           releaseBody: '${{ github.event.head_commit.message }}'
           releaseDraft: false
           prerelease: false
+
+  build-android:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Install Frontend Dependencies
+        working-directory: ./adisyon-app
+        run: npm install
+
+      - name: Build Android APK
+        working-directory: ./adisyon-app
+        run: |
+          rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+          npx tauri android build --apk
+          cp src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk adisyon-android.apk
+
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          files: ./adisyon-app/adisyon-android.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
