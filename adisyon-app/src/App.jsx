@@ -1,6 +1,6 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
 import { useState, useEffect, useCallback } from 'react';
-import { Cloud, CloudOff, Server } from 'lucide-react';
+import { Cloud, CloudOff, Server, LayoutGrid, Package, Book, TrendingUp, Settings } from 'lucide-react';
 
 
 
