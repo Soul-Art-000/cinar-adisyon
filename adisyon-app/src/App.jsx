@@ -409,8 +409,9 @@ export default function App() {
 
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden bg-gray-100 relative">
-<Sidebar view={view} setView={setView} />
+    <div className="flex flex-col md:flex-row h-[100dvh] overflow-hidden bg-gray-100 relative">
+      <Sidebar view={view} setView={setView} />
+      
       <div className="flex-1 overflow-hidden relative">
         {view === 'masalar' && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
         {view === 'urunler' && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={p => mutate('add', 'products', p.id, p)} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={p => mutate('update', 'products', p.id, p)} onDelete={id => mutate('delete', 'products', id)} />}
@@ -418,8 +419,33 @@ export default function App() {
         {view === 'ciro' && <CiroView sales={sales} onEndOfDay={handleEndOfDay} />}
         {view === 'veresiye' && <VeresiyeView customers={veresiye} onAdd={c => mutate('add', 'veresiye', c.id, c)} onUpdate={c => mutate('update', 'veresiye', c.id, c)} />}
       </div>
+      
+      {/* MOBİL ALT MENÜ */}
+      <div className="md:hidden bg-gray-900 flex justify-around items-center h-16 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)] z-50">
+        <button onClick={() => setView('masalar')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'masalar' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
+          <LayoutGrid size={20} />
+          <span className="text-[9px] font-bold mt-1 tracking-widest">MASALAR</span>
+        </button>
+        <button onClick={() => setView('urunler')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'urunler' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
+          <Package size={20} />
+          <span className="text-[9px] font-bold mt-1 tracking-widest">ÜRÜNLER</span>
+        </button>
+        <button onClick={() => setView('veresiye')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'veresiye' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
+          <Book size={20} />
+          <span className="text-[9px] font-bold mt-1 tracking-widest">VERESİYE</span>
+        </button>
+        <button onClick={() => setView('ciro')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'ciro' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
+          <TrendingUp size={20} />
+          <span className="text-[9px] font-bold mt-1 tracking-widest">CİRO</span>
+        </button>
+        <button onClick={() => setView('ayarlar')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'ayarlar' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
+          <Settings size={20} />
+          <span className="text-[9px] font-bold mt-1 tracking-widest">AYARLAR</span>
+        </button>
+      </div>
+
       {!isOnline && (
-        <div className="absolute bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2 z-50">
+        <div className="absolute bottom-20 md:bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2 z-50">
           <CloudOff size={20} /> Çevrimdışı (Hata)
         </div>
       )}
