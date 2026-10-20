@@ -1,6 +1,6 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
-import { useState, useEffect, useCallback } from 'react';
-import { Cloud, CloudOff, Server, LayoutGrid, Package, Book, TrendingUp, Settings } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Cloud, CloudOff, Server, LayoutGrid, Package, Book, TrendingUp, Settings, ScanBarcode } from 'lucide-react';
 
 
 
@@ -46,6 +46,8 @@ import ProductsAdmin from './components/ProductsAdmin.jsx';
 import SettingsAdmin from './components/SettingsAdmin.jsx';
 import CiroView from './components/CiroView.jsx';
 import VeresiyeView from './components/VeresiyeView.jsx';
+import KasaView from './components/KasaView.jsx';
+import BarcodeAdmin from './components/BarcodeAdmin.jsx';
 
 const COLORS = [
   'bg-orange-500','bg-amber-500','bg-yellow-500','bg-green-500',
@@ -58,7 +60,21 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).substring
 const now = () => new Date().toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export default function App() {
-  const [view, setView] = useState('masalar');
+  const [view, setView] = useState(localStorage.getItem('kiosk') ? 'kasa' : 'masalar');
+  const [kiosk, setKiosk] = useState(!!localStorage.getItem('kiosk'));
+  // Kiosk'tan çıkış: kasa ekranının sol üst köşesine 5 kez dokun
+  const tapRef = useRef({ n: 0, t: 0 });
+  const kioskTap = () => {
+    const nowT = Date.now();
+    if (nowT - tapRef.current.t > 1500) tapRef.current.n = 0;
+    tapRef.current.t = nowT;
+    if (++tapRef.current.n >= 5) {
+      localStorage.removeItem('kiosk');
+      setKiosk(false);
+      setView('masalar');
+      tapRef.current.n = 0;
+    }
+  };
 
   
   const [zones, setZones] = useState([]);
@@ -68,6 +84,7 @@ export default function App() {
   const [orders, setOrders] = useState([]);
   const [sales, setSales] = useState([]);
   const [veresiye, setVeresiye] = useState([]);
+  const [barcodes, setBarcodes] = useState([]);
   
   const [activeTableId, setActive] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
@@ -97,6 +114,7 @@ export default function App() {
       s.sort((a,b) => a.createdAt - b.createdAt);
       setSales(s);
       setVeresiye(db.veresiye || []);
+      setBarcodes(db.barcodes || []);
       
       setIsOnline(true);
     } catch (e) {
@@ -410,21 +428,28 @@ export default function App() {
 
   return (
     <div className="flex flex-col md:flex-row h-[100dvh] overflow-hidden bg-gray-100 relative">
-      <Sidebar view={view} setView={setView} />
+      {!kiosk && <Sidebar view={view} setView={setView} />}
       
       <div className="flex-1 overflow-hidden relative">
-        {view === 'masalar' && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
-        {view === 'urunler' && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={p => mutate('add', 'products', p.id, p)} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={p => mutate('update', 'products', p.id, p)} onDelete={id => mutate('delete', 'products', id)} />}
-        {view === 'ayarlar' && <SettingsAdmin zones={zones} categories={categories} onAddZone={handleAddZone} onDeleteZone={handleDeleteZone} onAddCategory={handleAddCategory} onDeleteCategory={handleDeleteCategory} />}
-        {view === 'ciro' && <CiroView sales={sales} onEndOfDay={handleEndOfDay} />}
-        {view === 'veresiye' && <VeresiyeView customers={veresiye} onAdd={c => mutate('add', 'veresiye', c.id, c)} onUpdate={c => mutate('update', 'veresiye', c.id, c)} />}
+        {view === 'masalar' && !kiosk && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
+        {view === 'urunler' && !kiosk && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={p => mutate('add', 'products', p.id, p)} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={p => mutate('update', 'products', p.id, p)} onDelete={id => mutate('delete', 'products', id)} />}
+        {view === 'ayarlar' && !kiosk && <SettingsAdmin zones={zones} categories={categories} onAddZone={handleAddZone} onDeleteZone={handleDeleteZone} onAddCategory={handleAddCategory} onDeleteCategory={handleDeleteCategory} />}
+        {view === 'ciro' && !kiosk && <CiroView sales={sales} onEndOfDay={handleEndOfDay} />}
+        {view === 'kasa' && <KasaView products={products} colors={COLORS} mutate={mutate} />}
+        {view === 'barkod' && !kiosk && <BarcodeAdmin barcodes={barcodes} products={products} categories={categories} colors={COLORS} mutate={mutate} />}
+        {view === 'veresiye' && !kiosk && <VeresiyeView customers={veresiye} onAdd={c => mutate('add', 'veresiye', c.id, c)} onUpdate={c => mutate('update', 'veresiye', c.id, c)} />}
+        {kiosk && <div onClick={kioskTap} className="absolute top-0 left-0 w-24 h-24 z-50" />}
       </div>
       
       {/* MOBİL ALT MENÜ */}
-      <div className="md:hidden bg-gray-900 flex justify-around items-center h-16 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)] z-50">
+      <div className={`${kiosk ? 'hidden' : 'md:hidden'} bg-gray-900 flex justify-around items-center h-16 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)] z-50`}>
         <button onClick={() => setView('masalar')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'masalar' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
           <LayoutGrid size={20} />
           <span className="text-[9px] font-bold mt-1 tracking-widest">MASALAR</span>
+        </button>
+        <button onClick={() => setView('kasa')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'kasa' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
+          <ScanBarcode size={20} />
+          <span className="text-[9px] font-bold mt-1 tracking-widest">KASA</span>
         </button>
         <button onClick={() => setView('urunler')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'urunler' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
           <Package size={20} />

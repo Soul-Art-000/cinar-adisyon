@@ -3,6 +3,7 @@ import { Plus, Trash2, Printer } from 'lucide-react';
 import { invoke, isTauri } from '@tauri-apps/api/core';
 
 export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZone, onAddCategory, onDeleteCategory }) {
+  const [kiosk] = useState(!!localStorage.getItem('kiosk'));
   const [localIp, setLocalIp] = useState('');
   const [hostname, setHostname] = useState('...');
   useEffect(() => {
@@ -143,6 +144,24 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
             </button>
           </div>
           <p className="text-xs text-gray-500 mt-3">Bilgisayara bağlı (USB) bir yazıcı seçtiğinizde siparişler ödendiğinde otomatik fiş basılacaktır.</p>
+        </div>
+
+        {/* KİOSK MODU */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 md:col-span-2 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="font-bold text-gray-700 text-base uppercase tracking-wide">🖥️ Kiosk Modu</h2>
+            <p className="text-xs text-gray-500 mt-1">Açıkken uygulama sadece Kasa ekranını gösterir; menü ve ayarlar gizlenir. Çıkmak için bu ekranda 5 kez üst köşeye dokun.</p>
+          </div>
+          <button
+            onClick={() => {
+              if (kiosk) localStorage.removeItem('kiosk');
+              else localStorage.setItem('kiosk', '1');
+              window.location.reload();
+            }}
+            className={`btn-press px-6 py-3 rounded-xl shadow-sm font-bold text-white ${kiosk ? 'bg-red-600' : 'bg-green-600'}`}
+          >
+            {kiosk ? 'Kapat' : 'Aç'}
+          </button>
         </div>
 
         {/* KASAYA BAĞLAN (MOBİL İÇİN) */}
