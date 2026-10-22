@@ -21,7 +21,7 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.0,
+      "cost": 14,
       "barcode": null
     },
     {
@@ -91,7 +91,7 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 9.0,
+      "cost": 9,
       "barcode": "8690504117827"
     },
     {
@@ -161,7 +161,7 @@
       "category": "BÜFE",
       "color": "bg-cyan-500",
       "unit": "adet",
-      "cost": 23.0,
+      "cost": 23,
       "barcode": "8683789552643"
     }
   ],

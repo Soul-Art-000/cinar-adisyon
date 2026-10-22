@@ -60,7 +60,7 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).substring
 const now = () => new Date().toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export default function App() {
-  const [view, setView] = useState(localStorage.getItem('kiosk') ? 'kasa' : 'masalar');
+  const [view, setView] = useState('kasa');
   const [kiosk, setKiosk] = useState(!!localStorage.getItem('kiosk'));
   // Kiosk'tan çıkış: kasa ekranının sol üst köşesine 5 kez dokun
   const tapRef = useRef({ n: 0, t: 0 });
@@ -431,22 +431,27 @@ export default function App() {
       {!kiosk && <Sidebar view={view} setView={setView} />}
       
       <div className="flex-1 overflow-hidden relative">
-        {view === 'masalar' && !kiosk && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
+        {false && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
         {view === 'urunler' && !kiosk && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={p => mutate('add', 'products', p.id, p)} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={p => mutate('update', 'products', p.id, p)} onDelete={id => mutate('delete', 'products', id)} />}
         {view === 'ayarlar' && !kiosk && <SettingsAdmin zones={zones} categories={categories} onAddZone={handleAddZone} onDeleteZone={handleDeleteZone} onAddCategory={handleAddCategory} onDeleteCategory={handleDeleteCategory} />}
         {view === 'ciro' && !kiosk && <CiroView sales={sales} onEndOfDay={handleEndOfDay} />}
-        {view === 'kasa' && <KasaView products={products} colors={COLORS} mutate={mutate} />}
+        {view === 'kasa' && <KasaView products={products} colors={COLORS} mutate={mutate} customers={veresiye} />}
         {view === 'barkod' && !kiosk && <BarcodeAdmin barcodes={barcodes} products={products} categories={categories} colors={COLORS} mutate={mutate} />}
-        {view === 'veresiye' && !kiosk && <VeresiyeView customers={veresiye} onAdd={c => mutate('add', 'veresiye', c.id, c)} onUpdate={c => mutate('update', 'veresiye', c.id, c)} />}
+        {view === 'veresiye' && !kiosk && <VeresiyeView customers={veresiye}
+          onAddCustomer={c => mutate('add', 'veresiye', null, { id: 'v-' + Date.now().toString(36), ...c })}
+          onAddLog={(customerId, amount, type, note) => {
+            const c = veresiye.find(x => x.id === customerId);
+            if (!c) return;
+            const delta = type === 'payment' ? -amount : amount;
+            const log = { id: Date.now().toString(), type, amount, date: new Date().toLocaleString('tr-TR'), note };
+            mutate('update', 'veresiye', customerId, { debt: Math.max(0, (c.debt || 0) + delta), logs: [...(c.logs || []), log] });
+          }}
+          onDeleteCustomer={id => mutate('delete', 'veresiye', id)} />}
         {kiosk && <div onClick={kioskTap} className="absolute top-0 left-0 w-24 h-24 z-50" />}
       </div>
       
       {/* MOBİL ALT MENÜ */}
       <div className={`${kiosk ? 'hidden' : 'md:hidden'} bg-gray-900 flex justify-around items-center h-16 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)] z-50`}>
-        <button onClick={() => setView('masalar')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'masalar' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
-          <LayoutGrid size={20} />
-          <span className="text-[9px] font-bold mt-1 tracking-widest">MASALAR</span>
-        </button>
         <button onClick={() => setView('kasa')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'kasa' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
           <ScanBarcode size={20} />
           <span className="text-[9px] font-bold mt-1 tracking-widest">KASA</span>

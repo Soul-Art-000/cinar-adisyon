@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Package, Plus, Edit2, Trash2, X, Check, Search, Filter, Scale, UploadCloud, Copy } from 'lucide-react';
+import { Package, Plus, Edit2, Trash2, X, Check, Search, Filter, Scale, UploadCloud, Copy, Barcode } from 'lucide-react';
 
 export default function ProductsAdmin({ products, categories, colors, onAdd, onAddMultiple, onEdit, onDelete }) {
   const [showBulkModal, setShowBulkModal] = useState(false);
@@ -49,6 +49,7 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
   const [newColor, setNewColor] = useState(colors[0]);
   const [newCategory, setNewCategory] = useState(categories[0] || '');
   const [newIsKg, setNewIsKg] = useState(false);
+  const [newBarcode, setNewBarcode] = useState('');
 
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
@@ -62,8 +63,8 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
 
   const handleAdd = () => {
     if (!newName || !newPrice || !newCategory) return;
-    onAdd({ name: newName, price: Number(newPrice), category: newCategory, color: newColor, unit: newIsKg ? 'kg' : 'adet' });
-    setNewName(''); setNewPrice(''); setNewIsKg(false);
+    onAdd({ name: newName, price: Number(newPrice), category: newCategory, color: newColor, unit: newIsKg ? 'kg' : 'adet', barcode: newBarcode.trim() || undefined });
+    setNewName(''); setNewPrice(''); setNewIsKg(false); setNewBarcode('');
   };
 
   const startEdit = (p) => {
@@ -112,6 +113,10 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
                   <div className="w-32">
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1.5 block">Fiyat (TL)</label>
                     <input type="number" min="0" placeholder="0.00" value={newPrice} onChange={e=>setNewPrice(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+                  </div>
+                  <div className="w-44">
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1.5 block flex items-center gap-1"><Barcode size={12}/> Barkod</label>
+                    <input type="text" placeholder="Okut veya yaz" value={newBarcode} onChange={e=>setNewBarcode(e.target.value)} className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
                   </div>
                   <div className="flex-1">
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1.5 block">Kategori</label>
@@ -169,6 +174,7 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
               <thead className="bg-gray-50/50 text-xs uppercase text-gray-400 border-b border-gray-100">
                 <tr>
                   <th className="px-6 py-3 font-bold">Ürün Adı</th>
+                  <th className="px-6 py-3 font-bold">Barkod</th>
                   <th className="px-6 py-3 font-bold">Kategori</th>
                   <th className="px-6 py-3 font-bold">Renk</th>
                   <th className="px-6 py-3 font-bold">Birim</th>
@@ -184,6 +190,7 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
                       <td className="px-6 py-3 font-medium text-gray-800">
                         {isEditing ? <input autoFocus type="text" value={editName} onChange={e=>setEditName(e.target.value)} className="border border-gray-300 rounded px-2 py-1 w-full text-sm" /> : p.name}
                       </td>
+                      <td className="px-6 py-3 font-mono text-xs text-gray-500">{p.barcode || '—'}</td>
                       <td className="px-6 py-3">
                         {isEditing ? (
                           <select value={editCategory} onChange={e=>setEditCategory(e.target.value)} className="border border-gray-300 rounded px-2 py-1 text-sm bg-white">
@@ -227,7 +234,7 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-gray-400 text-sm">
+                    <td colSpan="7" className="px-6 py-12 text-center text-gray-400 text-sm">
                       Arama kriterlerine uygun ürün bulunamadı.
                     </td>
                   </tr>

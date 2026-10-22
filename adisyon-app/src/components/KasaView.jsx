@@ -3,12 +3,14 @@ import { ScanBarcode, Plus, Trash2, Search, Camera, Check, X, LayoutGrid } from 
 import { lookupBarcode, sellBarcode, listenBarcode } from '../barcode.js';
 
 // KANTİN: barkod okut → fiyat göster → satışa ekle → tahsil et
-export default function KasaView({ products, colors, onAddProduct, mutate }) {
+export default function KasaView({ products, colors, onAddProduct, mutate, customers = [] }) {
   const [code, setCode] = useState('');
   const [item, setItem] = useState(null);
   const [basket, setBasket] = useState([]);
   const [msg, setMsg] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('nakit');
+  const [debtorId, setDebtorId] = useState('');
+  const [newDebtor, setNewDebtor] = useState('');
   const [lastSale, setLastSale] = useState(null);
   const [manual, setManual] = useState({ name: '', price: '', code: '' });
   const [pickSearch, setPickSearch] = useState('');
@@ -63,25 +65,43 @@ export default function KasaView({ products, colors, onAddProduct, mutate }) {
 
   const pay = async () => {
     if (!basket.length) return;
+    if (paymentMethod === 'veresiye' && !debtorId && !newDebtor.trim()) {
+      setMsg({ type: 'err', text: 'Veresiye için müşteri seçin veya ad yazın' });
+      return;
+    }
     let online = true;
     for (const it of basket) {
       const r = await sellBarcode(it.code, it.qty, paymentMethod).catch(() => ({ ok: false }));
       if (!r?.ok) online = false;
     }
+    const sale = {
+      id: 'sale-' + Date.now().toString(36),
+      tableId: 'KANTIN', tableName: 'Kantin (barkod)',
+      items: basket.map(i => ({ productId: i.id, barcode: i.code, name: i.name, price: i.price, qty: i.qty })),
+      subtotal: total, paymentMethod, discountType: 'amount', discountValue: 0, discountAmount: 0,
+      finalTotal: total, paidAt: new Date().toLocaleString('tr-TR'), createdAt: Date.now()
+    };
     // Sunucu satış ucunu bulamazsa (Tauri sunucusu / barkodsuz ürün) doğrudan sales koleksiyonuna yaz
-    if (!online && mutate) {
-      const sale = {
-        id: 'sale-' + Date.now().toString(36),
-        tableId: 'KANTIN', tableName: 'Kantin (barkod)',
-        items: basket.map(i => ({ productId: i.id, barcode: i.code, name: i.name, price: i.price, qty: i.qty })),
-        subtotal: total, paymentMethod, discountType: 'amount', discountValue: 0, discountAmount: 0,
-        finalTotal: total, paidAt: new Date().toLocaleString('tr-TR'), createdAt: Date.now()
-      };
-      await mutate('add', 'sales', null, sale);
+    if (!online && mutate) await mutate('add', 'sales', null, sale);
+
+    // Veresiye: borcu müşteriye yaz
+    if (paymentMethod === 'veresiye' && mutate) {
+      const log = { id: Date.now().toString(), type: 'debt', amount: total, date: new Date().toLocaleString('tr-TR'), note: 'Kasa satışı' };
+      if (debtorId) {
+        const c = customers.find(x => x.id === debtorId);
+        if (c) await mutate('update', 'veresiye', debtorId, { debt: (c.debt || 0) + total, logs: [...(c.logs || []), log] });
+      } else {
+        await mutate('add', 'veresiye', null, {
+          id: 'v-' + Date.now().toString(36), name: newDebtor.trim(), phone: '',
+          debt: total, logs: [log], createdAt: Date.now()
+        });
+      }
+      setDebtorId(''); setNewDebtor('');
     }
+
     setLastSale({ items: basket, total, paymentMethod, at: new Date().toLocaleTimeString('tr-TR') });
     setBasket([]);
-    setMsg({ type: 'ok', text: `Satış tamamlandı: ${total} TL` });
+    setMsg({ type: 'ok', text: `Satış tamamlandı: ${total} TL${paymentMethod === 'veresiye' ? ' (veresiye)' : ''}` });
   };
 
   const defineBarcode = () => {
@@ -204,13 +224,25 @@ export default function KasaView({ products, colors, onAddProduct, mutate }) {
         </div>
         <div className="border-t border-gray-200 p-4 space-y-3">
           <div className="flex gap-2">
-            {['nakit', 'kart'].map(m => (
+            {['nakit', 'kart', 'veresiye'].map(m => (
               <button key={m} onClick={() => setPaymentMethod(m)}
                 className={`flex-1 py-2.5 rounded-xl text-sm font-bold border-2 btn-press ${paymentMethod === m ? 'border-primary bg-primary/10 text-primary' : 'border-gray-200 text-gray-500'}`}>
-                {m.toUpperCase()}
+                {m === 'veresiye' ? 'VERESİYE' : m.toUpperCase()}
               </button>
             ))}
           </div>
+          {paymentMethod === 'veresiye' && (
+            <div className="space-y-2">
+              <select value={debtorId} onChange={e => setDebtorId(e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+                <option value="">— Müşteri seç —</option>
+                {(customers || []).map(c => <option key={c.id} value={c.id}>{c.name} ({(c.debt || 0)} TL)</option>)}
+              </select>
+              <input value={newDebtor} onChange={e => setNewDebtor(e.target.value)}
+                placeholder="veya yeni müşteri adı"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <span className="font-bold text-gray-600 text-sm uppercase">Toplam</span>
             <span className="font-bold text-2xl text-primary">{total} TL</span>
