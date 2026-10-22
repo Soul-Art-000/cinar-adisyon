@@ -71,7 +71,7 @@ export default function App() {
     if (++tapRef.current.n >= 5) {
       localStorage.removeItem('kiosk');
       setKiosk(false);
-      setView('masalar');
+      setView('kasa');
       tapRef.current.n = 0;
     }
   };
@@ -126,29 +126,39 @@ export default function App() {
 
   useEffect(() => {
     fetchDb();
-    const interval = setInterval(fetchDb, 2000); // 2 saniyede bir eşitle
-    return () => clearInterval(interval);
+    // Sekme görünürken 5 sn'de bir eşitle; arka planda hiç çalışma (pil + CPU)
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchDb();
+    }, 5000);
+    const onVisible = () => { if (document.visibilityState === 'visible') fetchDb(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { clearInterval(interval); document.removeEventListener('visibilitychange', onVisible); };
   }, [fetchDb]);
 
   const mutate = async (action, collection, id, data) => {
     try {
       await apiInvoke('mutate_db', { mutations: [{ action, collection, id, data }] });
       fetchDb(); // Hızlı senkronizasyon için
+      return true;
     } catch (e) {
-      console.error(e);
+      console.error('mutate:', action, collection, e);
+      setDbError(`Kayıt başarısız (${collection}): ${e?.message || e}`);
+      setTimeout(() => setDbError(null), 6000);
+      throw e;
     }
   };
 
   // Ürün değişince barcodes koleksiyonunu ürüne göre yeniden kur (kasa buradan okuyor)
   const syncBarcodes = async (productsArr) => {
     const codes = productsArr.filter(p => p.barcode).map(p => ({
-      id: 'bc-' + p.id, code: String(p.barcode).trim(), name: p.name, price: p.price,
+      id: 'bc-' + p.id, code: String(p.barcode).trim(), name: p.name, price: Number(p.price),
       category: p.category, color: p.color, unit: p.unit || 'adet'
     }));
     await apiInvoke('mutate_db', { mutations: [{ action: 'set', collection: 'barcodes', id: null, data: codes }] });
     fetchDb();
   };
 
+  // Kasada tanımlanan barkodu ürün listesine de yaz (iki yönlü senkron)
   const handleAddProductFull = async (p) => {
     await apiInvoke('mutate_db', { mutations: [{ action: 'add', collection: 'products', id: null, data: p }] });
     const next = [...products.filter(x => x.id !== p.id), p];
@@ -219,16 +229,33 @@ export default function App() {
     }
     
     // Z-Raporu yazdırma işlemi CiroView içinden tetiklenecek, 
-    // biz sadece veritabanını sıfırlıyoruz.
-    if (!confirm("Gün sonu yapmak ve tüm satışları sıfırlamak istediğinize emin misiniz?")) return;
+    // biz sadece satışları arşive taşıyıp günü kapatıyoruz.
+    if (!confirm("Gün sonu yapmak istediğinize emin misiniz?\n\nSatışlar silinmez, arşive taşınır; ciro raporu sıfırlanır.")) return;
     
+    const nakit = sales.filter(s => s.paymentMethod === 'nakit').reduce((a, s) => a + s.finalTotal, 0);
+    const kart = sales.filter(s => s.paymentMethod === 'kart').reduce((a, s) => a + s.finalTotal, 0);
+    const veresiyeT = sales.filter(s => s.paymentMethod === 'veresiye').reduce((a, s) => a + s.finalTotal, 0);
+    const archive = {
+      id: 'day-' + Date.now().toString(36),
+      date: new Date().toLocaleDateString('tr-TR'),
+      closedAt: new Date().toLocaleString('tr-TR'),
+      count: sales.length, nakit, kart, veresiye: veresiyeT,
+      total: nakit + kart + veresiyeT,
+      sales: sales
+    };
     setSales([]);
     try {
-      await apiInvoke('mutate_db', { mutations: [{ action: 'set', collection: 'sales', id: null, data: [] }] });
-      alert("Kasa başarıyla kapatıldı ve sıfırlandı.");
+      await apiInvoke('mutate_db', {
+        mutations: [
+          { action: 'add', collection: 'archive', id: null, data: archive },
+          { action: 'set', collection: 'sales', id: null, data: [] }
+        ]
+      });
+      alert(`Kasa kapatıldı. ${sales.length} satış arşive alındı (Toplam ${archive.total} TL).`);
     } catch(e) {
       console.error(e);
       alert("Kasa kapatılırken hata oluştu!");
+      fetchDb();
     }
   };
 
@@ -458,11 +485,17 @@ export default function App() {
       {!kiosk && <Sidebar view={view} setView={setView} />}
       
       <div className="flex-1 overflow-hidden relative">
+        {dbError && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[60] bg-red-600 text-white text-sm font-bold px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 max-w-lg">
+            <span>{dbError}</span>
+            <button onClick={() => setDbError(null)} className="text-white/80 hover:text-white">✕</button>
+          </div>
+        )}
         {false && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
         {view === 'urunler' && !kiosk && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={handleAddProductFull} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={handleEditProductFull} onDelete={handleDeleteProductFull} />}
         {view === 'ayarlar' && !kiosk && <SettingsAdmin zones={zones} categories={categories} onAddZone={handleAddZone} onDeleteZone={handleDeleteZone} onAddCategory={handleAddCategory} onDeleteCategory={handleDeleteCategory} />}
         {view === 'ciro' && !kiosk && <CiroView sales={sales} onEndOfDay={handleEndOfDay} />}
-        {view === 'kasa' && <KasaView products={products} colors={COLORS} mutate={mutate} customers={veresiye} />}
+        {view === 'kasa' && <KasaView products={products} colors={COLORS} mutate={mutate} onAddProduct={handleAddProductFull} customers={veresiye} />}
         {view === 'barkod' && !kiosk && <BarcodeAdmin barcodes={barcodes} products={products} categories={categories} colors={COLORS} mutate={mutate} />}
         {view === 'veresiye' && !kiosk && <VeresiyeView customers={veresiye}
           onAddCustomer={c => mutate('add', 'veresiye', null, { id: 'v-' + Date.now().toString(36), ...c })}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ScanBarcode, Plus, Trash2, Search, Camera, Check, X, LayoutGrid } from 'lucide-react';
-import { lookupBarcode, sellBarcode, listenBarcode } from '../barcode.js';
+import { lookupBarcode, listenBarcode } from '../barcode.js';
 
 // KANTİN: barkod okut → fiyat göster → satışa ekle → tahsil et
 export default function KasaView({ products, colors, onAddProduct, mutate, customers = [] }) {
@@ -35,13 +35,17 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     if (r.data?.found) {
       addToBasket(r.data.item);
       setMsg({ type: 'ok', text: `${r.data.item.name} eklendi` });
-    } else if (products.some(p => p.barcode === raw)) {
-      // ürün listesinde barkod varsa yerelde bul
-      addToBasket(products.find(p => p.barcode === raw));
-      setMsg({ type: 'ok', text: 'Ürün eklendi' });
     } else {
-      setMsg({ type: 'err', text: `Barkod tanımsız: ${raw} — aşağıdan tanımlayın` });
-      setManual(m => ({ ...m, code: raw }));
+      // Sunucu yoksa/404 ise yerelde ara: barcode (string) veya ürün id'si
+      const local = (products || []).find(p => String(p.barcode ?? '').trim() === raw)
+        || (products || []).find(p => String(p.id) === raw);
+      if (local) {
+        addToBasket({ ...local, barcode: local.barcode || raw });
+        setMsg({ type: 'ok', text: `${local.name} eklendi` });
+      } else {
+        setMsg({ type: 'err', text: `Barkod tanımsız: ${raw} — aşağıdan tanımlayın` });
+        setManual(m => ({ ...m, code: raw }));
+      }
     }
     setCode('');
     setItem(null);
@@ -69,23 +73,24 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
       setMsg({ type: 'err', text: 'Veresiye için müşteri seçin veya ad yazın' });
       return;
     }
-    let online = true;
-    for (const it of basket) {
-      const r = await sellBarcode(it.code, it.qty, paymentMethod).catch(() => ({ ok: false }));
-      if (!r?.ok) online = false;
-    }
+    // Sepetin tamamı TEK fiş olarak yazılır (ürün başına ayrı satış açmak ciroyu böler)
     const sale = {
       id: 'sale-' + Date.now().toString(36),
       tableId: 'KANTIN', tableName: 'Kantin (barkod)',
-      items: basket.map(i => ({ productId: i.id, barcode: i.code, name: i.name, price: i.price, qty: i.qty })),
+      items: basket.map(i => ({ productId: i.id, barcode: i.code, name: i.name, price: Number(i.price), qty: i.qty })),
       subtotal: total, paymentMethod, discountType: 'amount', discountValue: 0, discountAmount: 0,
       finalTotal: total, paidAt: new Date().toLocaleString('tr-TR'), createdAt: Date.now()
     };
-    // Sunucu satış ucunu bulamazsa (Tauri sunucusu / barkodsuz ürün) doğrudan sales koleksiyonuna yaz
-    if (!online && mutate) await mutate('add', 'sales', null, sale);
+    if (!mutate) return;
+    try {
+      await mutate('add', 'sales', null, sale);
+    } catch (e) {
+      setMsg({ type: 'err', text: 'Satış kaydedilemedi: ' + (e?.message || e) });
+      return;
+    }
 
     // Veresiye: borcu müşteriye yaz
-    if (paymentMethod === 'veresiye' && mutate) {
+    if (paymentMethod === 'veresiye') {
       const log = { id: Date.now().toString(), type: 'debt', amount: total, date: new Date().toLocaleString('tr-TR'), note: 'Kasa satışı' };
       if (debtorId) {
         const c = customers.find(x => x.id === debtorId);
@@ -106,17 +111,22 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
 
   const defineBarcode = () => {
     if (!manual.code || !manual.name || !manual.price) return;
-    const product = {
-      id: 'bc-' + Date.now().toString(36),
-      code: manual.code.trim(),
-      name: manual.name.trim(),
-      price: Number(manual.price),
-      category: 'KANTİN',
-      color: colors[0],
-      unit: 'adet'
-    };
-    mutate('add', 'barcodes', null, product);
-    setMsg({ type: 'ok', text: `${product.name} barkodu tanımlandı` });
+    const code = manual.code.trim();
+    const name = manual.name.trim();
+    const price = Number(manual.price);
+    // Ürün listesine de yaz ki "Ürünler" ekranında görünsün, fiyat tek kaynaktan yönetilsin
+    if (onAddProduct) {
+      onAddProduct({
+        id: 'p-' + code, name, price, category: 'BÜFE', color: colors[0],
+        unit: 'adet', barcode: code
+      });
+    } else if (mutate) {
+      mutate('add', 'barcodes', null, {
+        id: 'bc-' + Date.now().toString(36), code, name, price,
+        category: 'KANTİN', color: colors[0], unit: 'adet'
+      });
+    }
+    setMsg({ type: 'ok', text: `${name} ürünlere eklendi ve barkodu tanımlandı` });
     setManual({ name: '', price: '', code: '' });
   };
 

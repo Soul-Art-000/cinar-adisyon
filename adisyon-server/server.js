@@ -16,7 +16,7 @@ const DB_PATH = path.join(__dirname, 'database.json');
 
 const emptyDb = () => ({
   settings: { zones: [], categories: [] },
-  products: [], tables: [], orders: [], sales: [], veresiye: [], barcodes: []
+  products: [], tables: [], orders: [], sales: [], veresiye: [], barcodes: [], archive: []
 });
 
 // Kalıcı veritabanı. `barcodes`: { id, code, name, price, category, color, unit }
@@ -32,9 +32,15 @@ const save = () => {
 
 const arr = c => (Array.isArray(db[c]) ? db[c] : (db[c] = []));
 const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-const findCode = code => (db.barcodes || []).find(b => b.code === code)
-  || (db.products || []).find(p => p.barcode === code)
-  || (db.products || []).find(p => p.id === code);
+// Barkod her zaman string karşılaştırılır: okuyucu string yazar, kayıt sayı olabilir.
+const findCode = raw => {
+  const code = String(raw ?? '').trim();
+  if (!code) return null;
+  return (db.barcodes || []).find(b => String(b.code).trim() === code)
+    || (db.products || []).find(p => String(p.barcode ?? '').trim() === code)
+    || (db.products || []).find(p => String(p.id) === code)
+    || null;
+};
 
 app.get('/api/db', (req, res) => res.json(db));
 

@@ -1,9 +1,33 @@
 use std::sync::{Arc, Mutex};
 use std::path::PathBuf;
 use std::fs;
-use serde_json::Value;
+use serde_json::{json, Value};
 use tiny_http::{Server, Response, Header, Method};
 use rust_embed::RustEmbed;
+
+// %XX ve + kaçışlarını çöz (barkod URL'de kodlanmış gelebilir)
+fn urldecode(s: &str) -> String {
+    let bytes = s.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        match bytes[i] {
+            b'%' if i + 2 < bytes.len() => {
+                let hex = std::str::from_utf8(&bytes[i + 1..i + 3]).unwrap_or("");
+                if let Ok(b) = u8::from_str_radix(hex, 16) {
+                    out.push(b);
+                    i += 3;
+                } else {
+                    out.push(bytes[i]);
+                    i += 1;
+                }
+            }
+            b'+' => { out.push(b' '); i += 1; }
+            b => { out.push(b); i += 1; }
+        }
+    }
+    String::from_utf8_lossy(&out).to_string()
+}
 
 #[derive(RustEmbed)]
 #[folder = "../dist"]
@@ -39,6 +63,50 @@ pub fn start_server(db_path: PathBuf, db_cache: Arc<Mutex<Value>>) {
                     .with_header(cors_origin.clone());
                 let _ = request.respond(response);
                 
+            } else if path.starts_with("/api/barcode/") || path.starts_with("/api/price/") {
+                // Barkod sorgusu: barcodes + products.barcode + products.id (hepsi string karşılaştırılır)
+                let raw = path.rsplit('/').next().unwrap_or("");
+                let code = urldecode(raw).trim().to_string();
+                let is_price_only = path.starts_with("/api/price/");
+                let cache = db_cache.lock().unwrap();
+                let s = |v: &Value| v.as_str().map(|x| x.trim().to_string())
+                    .unwrap_or_else(|| v.to_string().trim_matches('"').trim().to_string());
+                let mut hit: Option<Value> = None;
+                if !code.is_empty() {
+                    if let Some(arr) = cache["barcodes"].as_array() {
+                        hit = arr.iter().find(|b| s(&b["code"]) == code).cloned();
+                    }
+                    if hit.is_none() {
+                        if let Some(arr) = cache["products"].as_array() {
+                            hit = arr.iter().find(|p| s(&p["barcode"]) == code)
+                                .or_else(|| arr.iter().find(|p| s(&p["id"]) == code))
+                                .cloned();
+                        }
+                    }
+                }
+                let body = match hit {
+                    Some(mut item) => {
+                        if let Some(o) = item.as_object_mut() {
+                            o.insert("barcode".into(), Value::String(code.clone()));
+                        }
+                        let out = if is_price_only {
+                            json!({ "found": true, "code": code,
+                                    "name": item["name"], "price": item["price"] })
+                        } else {
+                            json!({ "found": true, "code": code, "item": item })
+                        };
+                        serde_json::to_string(&out).unwrap()
+                    }
+                    None => serde_json::to_string(
+                        &json!({ "found": false, "code": code })).unwrap(),
+                };
+                let status = if body.contains("\"found\":true") { 200 } else { 404 };
+                let response = Response::from_string(body)
+                    .with_status_code(status)
+                    .with_header(Header::from_bytes(&b"Content-Type"[..], &b"application/json"[..]).unwrap())
+                    .with_header(cors_origin.clone());
+                let _ = request.respond(response);
+
             } else if path == "/api/mutate" {
                 let mut content = String::new();
                 request.as_reader().read_to_string(&mut content).unwrap_or(0);

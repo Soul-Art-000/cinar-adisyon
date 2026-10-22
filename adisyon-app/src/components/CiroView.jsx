@@ -1,9 +1,12 @@
-import { TrendingUp, Banknote, CreditCard, ShoppingBag } from 'lucide-react';
+import { TrendingUp, Banknote, CreditCard, ShoppingBag, Clock } from 'lucide-react';
 import { invoke, isTauri } from "@tauri-apps/api/core";
 export default function CiroView({ sales, onEndOfDay }) {
   const nakitTotal = sales.filter(s => s.paymentMethod === 'nakit').reduce((a, s) => a + s.finalTotal, 0);
   const kartTotal  = sales.filter(s => s.paymentMethod === 'kart').reduce((a, s) => a + s.finalTotal, 0);
   const veresiyeTotal = sales.filter(s => s.paymentMethod === 'veresiye').reduce((a, s) => a + s.finalTotal, 0);
+  // Tahsil edilen (kasaya giren) para: veresiye hariç
+  const tahsilat = nakitTotal + kartTotal;
+  // Toplam satış (veresiye dahil, henüz tahsil edilmemiş alacak)
   const grandTotal = nakitTotal + kartTotal + veresiyeTotal;
 
   // Ürün satışlarını topla
@@ -60,11 +63,18 @@ export default function CiroView({ sales, onEndOfDay }) {
 
 
       {/* Özet Kartları */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Toplam Ciro</div>
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Toplam Satış</div>
           <div className="text-3xl font-bold text-primary">{grandTotal.toLocaleString('tr-TR')} TL</div>
           <div className="text-xs text-gray-500 mt-1">{sales.length} işlem</div>
+        </div>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">
+            <Banknote size={14} className="text-green-500" /> Kasaya Giren (Tahsilat)
+          </div>
+          <div className="text-3xl font-bold text-gray-800">{tahsilat.toLocaleString('tr-TR')} TL</div>
+          <div className="text-xs text-gray-500 mt-1">nakit + kart</div>
         </div>
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-green-100">
           <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">
@@ -81,6 +91,16 @@ export default function CiroView({ sales, onEndOfDay }) {
           <div className="text-xs text-gray-500 mt-1">{sales.filter(s => s.paymentMethod === 'kart').length} işlem</div>
         </div>
       </div>
+
+      {veresiyeTotal > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8 flex items-center gap-3">
+          <Clock size={20} className="text-amber-600 shrink-0" />
+          <div>
+            <div className="font-bold text-amber-800">Veresiye (tahsil edilmedi): {veresiyeTotal.toLocaleString('tr-TR')} TL</div>
+            <div className="text-xs text-amber-700 mt-0.5">Bu tutar satışa dahil ama kasaya girmedi — Veresiye ekranından takip edilir.</div>
+          </div>
+        </div>
+      )}
 
       {/* Ürün Satışları */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
