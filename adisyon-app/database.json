@@ -17,12 +17,13 @@
     {
       "id": "p-bufe-eti-ahenk-sütlü-çikolata",
       "name": "Eti Ahenk Sütlü Çikolatalı Gofret 18 g",
-      "price": 20,
+      "price": 32,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.0,
-      "barcode": null
+      "cost": 23.59,
+      "barcode": null,
+      "stock": 18
     },
     {
       "id": "p-bufe-ülker-dido-35-g",
@@ -31,8 +32,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 20.7,
-      "barcode": "8690504028536"
+      "cost": 20.91,
+      "barcode": "8690504028536",
+      "stock": 24
     },
     {
       "id": "p-bufe-eti-popkek-vişneli-60-g",
@@ -41,8 +43,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.01,
-      "barcode": "8690526073873"
+      "cost": 14.15,
+      "barcode": "8690526073873",
+      "stock": 24
     },
     {
       "id": "p-bufe-eti-popkek-çikolatalı-60",
@@ -51,8 +54,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.01,
-      "barcode": "8690526083711"
+      "cost": 14.15,
+      "barcode": "8690526083711",
+      "stock": 24
     },
     {
       "id": "p-bufe-eti-popkek-muzlu-60-g",
@@ -61,8 +65,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.01,
-      "barcode": "8690526083728"
+      "cost": 14.15,
+      "barcode": "8690526083728",
+      "stock": 24
     },
     {
       "id": "p-bufe-çaykur-didi-bergamot-500",
@@ -71,8 +76,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 25.63,
-      "barcode": "8691020675624"
+      "cost": 25.89,
+      "barcode": "8691020675624",
+      "stock": 12
     },
     {
       "id": "p-bufe-ülker-çiziviç-82-g",
@@ -81,8 +87,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 16.94,
-      "barcode": "8690504009542"
+      "cost": 17.11,
+      "barcode": "8690504009542",
+      "stock": 24
     },
     {
       "id": "p-bufe-ülker-susamlı-çubuk-krak",
@@ -91,8 +98,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 9.0,
-      "barcode": "8690504117827"
+      "cost": 9.12,
+      "barcode": "8690504117827",
+      "stock": 22
     },
     {
       "id": "p-bufe-ülker-çubuk-kraker-40-g",
@@ -101,18 +109,20 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 5.5,
-      "barcode": "8690504017301"
+      "cost": 5.7,
+      "barcode": "8690504017301",
+      "stock": 36
     },
     {
       "id": "p-bufe-ülker-altınbaşak-yoğurt-",
       "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
-      "price": 19,
+      "price": 23,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 13.8,
-      "barcode": "8690504011828"
+      "cost": 16.73,
+      "barcode": "8690504011828",
+      "stock": 20
     },
     {
       "id": "p-bufe-ülker-çikolatalı-gofret-",
@@ -121,8 +131,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.05,
-      "barcode": "8690504135913"
+      "cost": 14.19,
+      "barcode": "8690504135913",
+      "stock": 36
     },
     {
       "id": "p-bufe-eti-hoşbeş-fındıklı-70-g",
@@ -131,8 +142,9 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 13.23,
-      "barcode": "8690526745220"
+      "cost": 13.37,
+      "barcode": "8690526745220",
+      "stock": 24
     },
     {
       "id": "p-bufe-capri-sun-safari-200-ml",
@@ -141,18 +153,20 @@
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 14.4,
-      "barcode": null
+      "cost": 14.55,
+      "barcode": null,
+      "stock": 20
     },
     {
       "id": "p-bufe-eti-browni-intense-50-g",
       "name": "Eti Browni Intense 50 g",
-      "price": 17,
+      "price": 26,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
-      "cost": 12.47,
-      "barcode": "8690526076379"
+      "cost": 18.9,
+      "barcode": "8690526076379",
+      "stock": 16
     },
     {
       "id": "p-bufe-sariyer-gazoz-200-cam",
@@ -246,7 +260,7 @@
       "id": "bc-ak-yoğurt-",
       "code": "8690504011828",
       "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
-      "price": 19,
+      "price": 23,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -273,7 +287,7 @@
       "id": "bc-tense-50-g",
       "code": "8690526076379",
       "name": "Eti Browni Intense 50 g",
-      "price": 17,
+      "price": 26,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"

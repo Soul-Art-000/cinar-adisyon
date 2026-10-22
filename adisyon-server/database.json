@@ -17,7 +17,7 @@
     {
       "id": "p-bufe-eti-ahenk-sütlü-çikolata",
       "name": "Eti Ahenk Sütlü Çikolatalı Gofret 18 g",
-      "price": 20,
+      "price": 32,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -107,7 +107,7 @@
     {
       "id": "p-bufe-ülker-altınbaşak-yoğurt-",
       "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
-      "price": 19,
+      "price": 23,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -147,7 +147,7 @@
     {
       "id": "p-bufe-eti-browni-intense-50-g",
       "name": "Eti Browni Intense 50 g",
-      "price": 17,
+      "price": 26,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -269,7 +269,7 @@
       "id": "bc-ak-yoğurt-",
       "code": "8690504011828",
       "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
-      "price": 19,
+      "price": 23,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -296,7 +296,7 @@
       "id": "bc-tense-50-g",
       "code": "8690526076379",
       "name": "Eti Browni Intense 50 g",
-      "price": 17,
+      "price": 26,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
