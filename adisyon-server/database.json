@@ -17,7 +17,7 @@
     {
       "id": "p-bufe-eti-ahenk-sütlü-çikolata",
       "name": "Eti Ahenk Sütlü Çikolatalı Gofret 18 g",
-      "price": 32,
+      "price": 35,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -27,7 +27,7 @@
     {
       "id": "p-bufe-ülker-dido-35-g",
       "name": "Ülker Dido 35 g",
-      "price": 28,
+      "price": 30,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -37,7 +37,7 @@
     {
       "id": "p-bufe-eti-popkek-vişneli-60-g",
       "name": "Eti Popkek Vişneli 60 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -47,7 +47,7 @@
     {
       "id": "p-bufe-eti-popkek-çikolatalı-60",
       "name": "Eti Popkek Çikolatalı 60 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -57,7 +57,7 @@
     {
       "id": "p-bufe-eti-popkek-muzlu-60-g",
       "name": "Eti Popkek Muzlu 60 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -67,7 +67,7 @@
     {
       "id": "p-bufe-çaykur-didi-bergamot-500",
       "name": "Çaykur Didi Bergamot 500 ml",
-      "price": 35,
+      "price": 38,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -77,7 +77,7 @@
     {
       "id": "p-bufe-ülker-çiziviç-82-g",
       "name": "Ülker ÇiziViç 82 g",
-      "price": 23,
+      "price": 25,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -87,7 +87,7 @@
     {
       "id": "p-bufe-ülker-susamlı-çubuk-krak",
       "name": "Ülker Susamlı Çubuk Kraker 70 g",
-      "price": 12,
+      "price": 15,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -97,7 +97,7 @@
     {
       "id": "p-bufe-ülker-çubuk-kraker-40-g",
       "name": "Ülker Çubuk Kraker 40 g",
-      "price": 8,
+      "price": 10,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -107,7 +107,7 @@
     {
       "id": "p-bufe-ülker-altınbaşak-yoğurt-",
       "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
-      "price": 23,
+      "price": 25,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -117,7 +117,7 @@
     {
       "id": "p-bufe-ülker-çikolatalı-gofret-",
       "name": "Ülker Çikolatalı Gofret 36 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -127,7 +127,7 @@
     {
       "id": "p-bufe-eti-hoşbeş-fındıklı-70-g",
       "name": "Eti Hoşbeş Fındıklı 70 g (gofret)",
-      "price": 18,
+      "price": 20,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -137,7 +137,7 @@
     {
       "id": "p-bufe-capri-sun-safari-200-ml",
       "name": "Capri-Sun Safari 200 ml",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -147,7 +147,7 @@
     {
       "id": "p-bufe-eti-browni-intense-50-g",
       "name": "Eti Browni Intense 50 g",
-      "price": 26,
+      "price": 28,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet",
@@ -197,7 +197,7 @@
       "id": "bc--dido-35-g",
       "code": "8690504028536",
       "name": "Ülker Dido 35 g",
-      "price": 28,
+      "price": 30,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -206,7 +206,7 @@
       "id": "bc-şneli-60-g",
       "code": "8690526073873",
       "name": "Eti Popkek Vişneli 60 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -215,7 +215,7 @@
       "id": "bc-olatalı-60",
       "code": "8690526083711",
       "name": "Eti Popkek Çikolatalı 60 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -224,7 +224,7 @@
       "id": "bc-muzlu-60-g",
       "code": "8690526083728",
       "name": "Eti Popkek Muzlu 60 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -233,7 +233,7 @@
       "id": "bc-rgamot-500",
       "code": "8691020675624",
       "name": "Çaykur Didi Bergamot 500 ml",
-      "price": 35,
+      "price": 38,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -242,7 +242,7 @@
       "id": "bc-ziviç-82-g",
       "code": "8690504009542",
       "name": "Ülker ÇiziViç 82 g",
-      "price": 23,
+      "price": 25,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -251,7 +251,7 @@
       "id": "bc-çubuk-krak",
       "code": "8690504117827",
       "name": "Ülker Susamlı Çubuk Kraker 70 g",
-      "price": 12,
+      "price": 15,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -260,7 +260,7 @@
       "id": "bc-raker-40-g",
       "code": "8690504017301",
       "name": "Ülker Çubuk Kraker 40 g",
-      "price": 8,
+      "price": 10,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -269,7 +269,7 @@
       "id": "bc-ak-yoğurt-",
       "code": "8690504011828",
       "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
-      "price": 23,
+      "price": 25,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -278,7 +278,7 @@
       "id": "bc-lı-gofret-",
       "code": "8690504135913",
       "name": "Ülker Çikolatalı Gofret 36 g",
-      "price": 19,
+      "price": 22,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -287,7 +287,7 @@
       "id": "bc-dıklı-70-g",
       "code": "8690526745220",
       "name": "Eti Hoşbeş Fındıklı 70 g (gofret)",
-      "price": 18,
+      "price": 20,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
@@ -296,7 +296,7 @@
       "id": "bc-tense-50-g",
       "code": "8690526076379",
       "name": "Eti Browni Intense 50 g",
-      "price": 26,
+      "price": 28,
       "category": "BÜFE",
       "color": "bg-rose-500",
       "unit": "adet"
