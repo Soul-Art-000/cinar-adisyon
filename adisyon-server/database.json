@@ -1,0 +1,314 @@
+{
+  "settings": {
+    "zones": [],
+    "categories": [
+      "GIDA",
+      "IZGARALAR",
+      "BOWL",
+      "DÜRÜMLER & EKMEK ARASI",
+      "BURGER",
+      "APERATİFLER",
+      "TATLILAR",
+      "İÇECEKLER",
+      "BÜFE"
+    ]
+  },
+  "products": [
+    {
+      "id": "p-bufe-eti-ahenk-sütlü-çikolata",
+      "name": "Eti Ahenk Sütlü Çikolatalı Gofret 18 g",
+      "price": 20,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 14.0,
+      "barcode": null
+    },
+    {
+      "id": "p-bufe-ülker-dido-35-g",
+      "name": "Ülker Dido 35 g",
+      "price": 28,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 20.7,
+      "barcode": "8690504028536"
+    },
+    {
+      "id": "p-bufe-eti-popkek-vişneli-60-g",
+      "name": "Eti Popkek Vişneli 60 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 14.01,
+      "barcode": "8690526073873"
+    },
+    {
+      "id": "p-bufe-eti-popkek-çikolatalı-60",
+      "name": "Eti Popkek Çikolatalı 60 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 14.01,
+      "barcode": "8690526083711"
+    },
+    {
+      "id": "p-bufe-eti-popkek-muzlu-60-g",
+      "name": "Eti Popkek Muzlu 60 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 14.01,
+      "barcode": "8690526083728"
+    },
+    {
+      "id": "p-bufe-çaykur-didi-bergamot-500",
+      "name": "Çaykur Didi Bergamot 500 ml",
+      "price": 35,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 25.63,
+      "barcode": "8691020675624"
+    },
+    {
+      "id": "p-bufe-ülker-çiziviç-82-g",
+      "name": "Ülker ÇiziViç 82 g",
+      "price": 23,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 16.94,
+      "barcode": "8690504009542"
+    },
+    {
+      "id": "p-bufe-ülker-susamlı-çubuk-krak",
+      "name": "Ülker Susamlı Çubuk Kraker 70 g",
+      "price": 12,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 9.0,
+      "barcode": "8690504117827"
+    },
+    {
+      "id": "p-bufe-ülker-çubuk-kraker-40-g",
+      "name": "Ülker Çubuk Kraker 40 g",
+      "price": 8,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 5.5,
+      "barcode": "8690504017301"
+    },
+    {
+      "id": "p-bufe-ülker-altınbaşak-yoğurt-",
+      "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 13.8,
+      "barcode": "8690504011828"
+    },
+    {
+      "id": "p-bufe-ülker-çikolatalı-gofret-",
+      "name": "Ülker Çikolatalı Gofret 36 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 14.05,
+      "barcode": "8690504135913"
+    },
+    {
+      "id": "p-bufe-eti-hoşbeş-fındıklı-70-g",
+      "name": "Eti Hoşbeş Fındıklı 70 g (gofret)",
+      "price": 18,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 13.23,
+      "barcode": "8690526745220"
+    },
+    {
+      "id": "p-bufe-capri-sun-safari-200-ml",
+      "name": "Capri-Sun Safari 200 ml",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 14.4,
+      "barcode": null
+    },
+    {
+      "id": "p-bufe-eti-browni-intense-50-g",
+      "name": "Eti Browni Intense 50 g",
+      "price": 17,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet",
+      "cost": 12.47,
+      "barcode": "8690526076379"
+    },
+    {
+      "id": "p-bufe-sariyer-gazoz-200-cam",
+      "name": "Sarıyer Gazoz 200 ml Cam Şişe",
+      "price": 29,
+      "category": "BÜFE",
+      "color": "bg-cyan-500",
+      "unit": "adet",
+      "cost": 23.0,
+      "barcode": "8683789552643"
+    }
+  ],
+  "tables": [],
+  "orders": [],
+  "sales": [
+    {
+      "id": "sale-mvjk630scatui",
+      "tableId": "KANTIN",
+      "tableName": "Kantin (barkod)",
+      "items": [
+        {
+          "productId": "p-bufe-eti-ahenk-sütlü-çikolata",
+          "barcode": "p-bufe-eti-ahenk-sütlü-çikolata",
+          "name": "Eti Ahenk Sütlü Çikolatalı Gofret 18 g",
+          "price": 30,
+          "qty": 2
+        }
+      ],
+      "subtotal": 60,
+      "paymentMethod": "nakit",
+      "discountType": "amount",
+      "discountValue": 0,
+      "discountAmount": 0,
+      "finalTotal": 60,
+      "paidAt": "22.10.2026 16:09:56",
+      "createdAt": 1792674596069
+    }
+  ],
+  "veresiye": [],
+  "barcodes": [
+    {
+      "id": "bc--dido-35-g",
+      "code": "8690504028536",
+      "name": "Ülker Dido 35 g",
+      "price": 28,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-şneli-60-g",
+      "code": "8690526073873",
+      "name": "Eti Popkek Vişneli 60 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-olatalı-60",
+      "code": "8690526083711",
+      "name": "Eti Popkek Çikolatalı 60 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-muzlu-60-g",
+      "code": "8690526083728",
+      "name": "Eti Popkek Muzlu 60 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-rgamot-500",
+      "code": "8691020675624",
+      "name": "Çaykur Didi Bergamot 500 ml",
+      "price": 35,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-ziviç-82-g",
+      "code": "8690504009542",
+      "name": "Ülker ÇiziViç 82 g",
+      "price": 23,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-çubuk-krak",
+      "code": "8690504117827",
+      "name": "Ülker Susamlı Çubuk Kraker 70 g",
+      "price": 12,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-raker-40-g",
+      "code": "8690504017301",
+      "name": "Ülker Çubuk Kraker 40 g",
+      "price": 8,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-ak-yoğurt-",
+      "code": "8690504011828",
+      "name": "Ülker Altınbaşak Yoğurt Yemişli 50 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-lı-gofret-",
+      "code": "8690504135913",
+      "name": "Ülker Çikolatalı Gofret 36 g",
+      "price": 19,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-dıklı-70-g",
+      "code": "8690526745220",
+      "name": "Eti Hoşbeş Fındıklı 70 g (gofret)",
+      "price": 18,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-tense-50-g",
+      "code": "8690526076379",
+      "name": "Eti Browni Intense 50 g",
+      "price": 17,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-oz-200-cam",
+      "code": "8683789552643",
+      "name": "Sarıyer Gazoz 200 ml Cam Şişe",
+      "price": 29,
+      "category": "BÜFE",
+      "color": "bg-cyan-500",
+      "unit": "adet"
+    }
+  ]
+}
