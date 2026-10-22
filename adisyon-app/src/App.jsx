@@ -139,6 +139,33 @@ export default function App() {
     }
   };
 
+  // Ürün değişince barcodes koleksiyonunu ürüne göre yeniden kur (kasa buradan okuyor)
+  const syncBarcodes = async (productsArr) => {
+    const codes = productsArr.filter(p => p.barcode).map(p => ({
+      id: 'bc-' + p.id, code: String(p.barcode).trim(), name: p.name, price: p.price,
+      category: p.category, color: p.color, unit: p.unit || 'adet'
+    }));
+    await apiInvoke('mutate_db', { mutations: [{ action: 'set', collection: 'barcodes', id: null, data: codes }] });
+    fetchDb();
+  };
+
+  const handleAddProductFull = async (p) => {
+    await apiInvoke('mutate_db', { mutations: [{ action: 'add', collection: 'products', id: null, data: p }] });
+    const next = [...products.filter(x => x.id !== p.id), p];
+    await syncBarcodes(next);
+  };
+
+  const handleEditProductFull = async (p) => {
+    await apiInvoke('mutate_db', { mutations: [{ action: 'update', collection: 'products', id: p.id, data: p }] });
+    const next = products.map(x => x.id === p.id ? { ...x, ...p } : x);
+    await syncBarcodes(next);
+  };
+
+  const handleDeleteProductFull = async (id) => {
+    await apiInvoke('mutate_db', { mutations: [{ action: 'delete', collection: 'products', id }] });
+    await syncBarcodes(products.filter(x => x.id !== id));
+  };
+
   const activeTable = tables.find(t => t.id === activeTableId) ?? null;
   const currentOrder = orders.find(o => o.id === activeTable?.orderId) ?? null;
 
@@ -432,7 +459,7 @@ export default function App() {
       
       <div className="flex-1 overflow-hidden relative">
         {false && <TablesView tables={tables} zones={zones} onTableClick={handleTableClick} onTableUpdate={t => mutate('update', 'tables', t.id, t)} onOrderCreate={o => { const mutations = [ { action: 'update', collection: 'tables', id: o.tableId, data: { status: 'occupied', orderId: o.id } }, { action: 'add', collection: 'orders', id: o.id, data: o } ]; apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onTransfer={(tableId, toZone) => mutate('update', 'tables', tableId, { zone: toZone })} />}
-        {view === 'urunler' && !kiosk && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={p => mutate('add', 'products', p.id, p)} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={p => mutate('update', 'products', p.id, p)} onDelete={id => mutate('delete', 'products', id)} />}
+        {view === 'urunler' && !kiosk && <ProductsAdmin products={products} categories={categories} colors={COLORS} onAdd={handleAddProductFull} onAddMultiple={items => { const mutations = items.map(p => ({ action: 'add', collection: 'products', id: p.id || Date.now().toString(36) + Math.random().toString(36).substring(2), data: p })); apiInvoke('mutate_db', { mutations }).then(fetchDb).catch(console.error); }} onEdit={handleEditProductFull} onDelete={handleDeleteProductFull} />}
         {view === 'ayarlar' && !kiosk && <SettingsAdmin zones={zones} categories={categories} onAddZone={handleAddZone} onDeleteZone={handleDeleteZone} onAddCategory={handleAddCategory} onDeleteCategory={handleDeleteCategory} />}
         {view === 'ciro' && !kiosk && <CiroView sales={sales} onEndOfDay={handleEndOfDay} />}
         {view === 'kasa' && <KasaView products={products} colors={COLORS} mutate={mutate} customers={veresiye} />}

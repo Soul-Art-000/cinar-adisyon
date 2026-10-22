@@ -57,23 +57,26 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
   const [editColor, setEditColor] = useState('');
   const [editCategory, setEditCategory] = useState('');
   const [editIsKg, setEditIsKg] = useState(false);
+  const [editBarcode, setEditBarcode] = useState('');
 
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState('ALL');
 
   const handleAdd = () => {
     if (!newName || !newPrice || !newCategory) return;
-    onAdd({ name: newName, price: Number(newPrice), category: newCategory, color: newColor, unit: newIsKg ? 'kg' : 'adet', barcode: newBarcode.trim() || undefined });
+    const id = 'p-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    onAdd({ id, name: newName, price: Number(newPrice), category: newCategory, color: newColor, unit: newIsKg ? 'kg' : 'adet', barcode: newBarcode.trim() || undefined });
     setNewName(''); setNewPrice(''); setNewIsKg(false); setNewBarcode('');
   };
 
   const startEdit = (p) => {
     setEditingId(p.id); setEditName(p.name); setEditPrice(p.price); 
     setEditColor(p.color || colors[0]); setEditCategory(p.category); setEditIsKg(p.unit === 'kg');
+    setEditBarcode(p.barcode || '');
   };
 
   const saveEdit = (p) => {
-    onEdit({ ...p, name: editName, price: Number(editPrice), color: editColor, category: editCategory, unit: editIsKg ? 'kg' : 'adet' });
+    onEdit({ ...p, name: editName, price: Number(editPrice), color: editColor, category: editCategory, unit: editIsKg ? 'kg' : 'adet', barcode: editBarcode.trim() || undefined });
     setEditingId(null);
   };
 
@@ -190,7 +193,11 @@ export default function ProductsAdmin({ products, categories, colors, onAdd, onA
                       <td className="px-6 py-3 font-medium text-gray-800">
                         {isEditing ? <input autoFocus type="text" value={editName} onChange={e=>setEditName(e.target.value)} className="border border-gray-300 rounded px-2 py-1 w-full text-sm" /> : p.name}
                       </td>
-                      <td className="px-6 py-3 font-mono text-xs text-gray-500">{p.barcode || '—'}</td>
+                      <td className="px-6 py-3 font-mono text-xs text-gray-500">
+                        {isEditing
+                          ? <input type="text" placeholder="Okut veya yaz" value={editBarcode} onChange={e=>setEditBarcode(e.target.value)} className="border border-gray-300 rounded px-2 py-1 w-40 text-sm font-mono" />
+                          : (p.barcode || '—')}
+                      </td>
                       <td className="px-6 py-3">
                         {isEditing ? (
                           <select value={editCategory} onChange={e=>setEditCategory(e.target.value)} className="border border-gray-300 rounded px-2 py-1 text-sm bg-white">
