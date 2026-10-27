@@ -155,7 +155,11 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
               autoFocus
               value={code}
               onChange={e => setCode(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && scan()}
+              onKeyDown={e => {
+                // Okutma yolunu global dinleyici yönetir; burada yalnız "SORGULA" için Enter
+                if (e.key !== 'Enter' || e.defaultPrevented) return;
+                scan();
+              }}
               placeholder="Barkod no..."
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-lg font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none"
             />

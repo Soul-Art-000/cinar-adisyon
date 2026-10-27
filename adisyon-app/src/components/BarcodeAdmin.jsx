@@ -68,7 +68,10 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
             <input
               ref={inputRef} autoFocus value={code}
               onChange={e => setCode(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && check()}
+              onKeyDown={e => {
+                if (e.key !== 'Enter' || e.defaultPrevented) return;
+                check();
+              }}
               placeholder="Barkod okut / yaz..."
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 font-mono focus:border-primary outline-none"
             />

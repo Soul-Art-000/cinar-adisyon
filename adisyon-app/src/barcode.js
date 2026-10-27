@@ -38,11 +38,14 @@ export const sellBarcode = (code, qty = 1, paymentMethod = 'nakit') =>
 function dedupe(fn) {
   let lastCode = '';
   let lastAt = 0;
+  let lastScanAt = 0;
   return code => {
     const now = Date.now();
-    if (code === lastCode && now - lastAt < 300) return;
+    // Aynı barkod kısa sürede hiç tekrar edilmez: bazı okuyucular tek okutmada
+    // olayı 2 kez yollar. Tekrar okutma için ürünü sepetten + ile çoğalt.
+    if (code === lastCode && now - lastScanAt < 1500) return;
     lastCode = code;
-    lastAt = now;
+    lastScanAt = now;
     fn(code);
   };
 }
