@@ -6,3 +6,8 @@ adisyon-app/node_modules/
 adisyon-app/dist/
 adisyon-server/node_modules/
 scratch/
+
+# macOS AppleDouble / sistem çöpü
+._*
+**/._*
+*.swp
