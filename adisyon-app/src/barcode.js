@@ -37,7 +37,6 @@ export const sellBarcode = (code, qty = 1, paymentMethod = 'nakit') =>
 // Enter'ı iki kez (ya da karakter + Enter + Enter) gönderir → ürün 2 kez eklenir.
 function dedupe(fn) {
   let lastCode = '';
-  let lastAt = 0;
   let lastScanAt = 0;
   return code => {
     const now = Date.now();
