@@ -28,8 +28,17 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     setMsg({ type: 'ok', text: `${p.name} eklendi` });
   };
 
+  // Okuyucu gecikmeli Enter basarsa aynı okutma iki kez gelir (buffer + alan değeri);
+  // aynı kodu 1,5 sn içinde ikinci kez işleme alma.
+  const lastScan = useRef({ code: '', at: 0 });
+
   const scan = async c => {
     const raw = (c ?? code).trim();
+    if (raw && lastScan.current.code === raw && Date.now() - lastScan.current.at < 1500) {
+      setCode('');
+      return;
+    }
+    lastScan.current = { code: raw, at: Date.now() };
     if (!raw) return;
     const r = await lookupBarcode(raw);
     if (r.data?.found) {

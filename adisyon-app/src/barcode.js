@@ -33,8 +33,23 @@ export const sellBarcode = (code, qty = 1, paymentMethod = 'nakit') =>
 // Global okuyucu dinleyicisi. onScan(code) çağrılır. enabled=false iken pasif.
 // Input odaklıyken de çalışır: okuyucu seri yazar + Enter basar, bu desen
 // insan yazımından ayırt edilebilir (>=4 karakter ve hepsi <=120 ms arayla).
+// Aynı barkod 300 ms içinde ikinci kez gelirse yut: bazı okuyucular
+// Enter'ı iki kez (ya da karakter + Enter + Enter) gönderir → ürün 2 kez eklenir.
+function dedupe(fn) {
+  let lastCode = '';
+  let lastAt = 0;
+  return code => {
+    const now = Date.now();
+    if (code === lastCode && now - lastAt < 300) return;
+    lastCode = code;
+    lastAt = now;
+    fn(code);
+  };
+}
+
 export function listenBarcode(onScan, enabled = true) {
   if (!enabled) return () => {};
+  const emit = dedupe(onScan);
   let buf = '';
   let last = 0;
 
@@ -47,12 +62,18 @@ export function listenBarcode(onScan, enabled = true) {
     last = now;
 
     if (e.key === 'Enter') {
-      const code = buf.trim();
+      // Okuyucu gecikmeli Enter basarsa (IME/dead key) buffer zaten boşalabilir;
+      // alanın kendi değerini okuyucu yazdıysa onu kullan.
+      const fieldVal = inField ? String(e.target.value ?? '').trim() : '';
+      let code = buf.trim();
+      // Alan değeri kodun devamı/başı olabilir: alan değeri kodu içeriyorsa onu al
+      if (!code && fieldVal.length >= 4) code = fieldVal;
+      else if (code && fieldVal.length >= code.length && fieldVal.includes(code)) code = fieldVal;
       buf = '';
       // Form alanında kısa yazım insan eliyle Enter'dır; okuyucu >=4 hane basar
       if (code.length >= 4) {
         e.preventDefault();
-        onScan(code);
+        emit(code);
         if (inField) e.target.blur?.();
       } else if (inField) {
         return; // alanın kendi Enter davranışı korunsun
