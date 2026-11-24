@@ -194,7 +194,8 @@
       "price": 20,
       "category": "BÜFE",
       "color": "bg-rose-500",
-      "unit": "adet"
+      "unit": "adet",
+      "barcode": "8690504035909"
     },
     {
       "id": "p-bufe-ulker-albeni-40-g",
@@ -210,7 +211,8 @@
       "price": 30,
       "category": "BÜFE",
       "color": "bg-rose-500",
-      "unit": "adet"
+      "unit": "adet",
+      "barcode": "8690526047256"
     },
     {
       "id": "p-bufe-ulker-mcvitie-s-sutlu-kakaolu-bar",
@@ -226,7 +228,8 @@
       "price": 60,
       "category": "BÜFE",
       "color": "bg-rose-500",
-      "unit": "adet"
+      "unit": "adet",
+      "barcode": null
     },
     {
       "id": "p-bufe-eti-karam-gurme-gofret-50-g",
@@ -250,7 +253,8 @@
       "price": 20,
       "category": "BÜFE",
       "color": "bg-rose-500",
-      "unit": "adet"
+      "unit": "adet",
+      "barcode": "8690526083704"
     },
     {
       "id": "p-bufe-ulker-dankek-magma-cikolatali-65-g",
@@ -266,7 +270,8 @@
       "price": 25,
       "category": "BÜFE",
       "color": "bg-rose-500",
-      "unit": "adet"
+      "unit": "adet",
+      "barcode": "8690504065630"
     },
     {
       "id": "p-bufe-ulker-probis-atistirmalik-75-g",
@@ -282,7 +287,8 @@
       "price": 35,
       "category": "BÜFE",
       "color": "bg-rose-500",
-      "unit": "adet"
+      "unit": "adet",
+      "barcode": "8690504034735"
     },
     {
       "id": "p-bufe-ulker-cizi-kraker-70-g",
@@ -468,6 +474,51 @@
       "price": 29,
       "category": "BÜFE",
       "color": "bg-cyan-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-p-bufe-ulker-metro-bar-36-g",
+      "code": "8690504035909",
+      "name": "Ülker Metro Bar 36 g",
+      "price": 20,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-p-bufe-eti-popkek-limonlu-kek-60-g",
+      "code": "8690526083704",
+      "name": "Eti Popkek Limonlu Kek 60 g",
+      "price": 20,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-p-bufe-ulker-albeni-atistirmalik-72-g",
+      "code": "8690504034735",
+      "name": "Ülker Albeni Atıştırmalık 72 g",
+      "price": 35,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-p-bufe-eti-canga-yer-fistikli-45-g",
+      "code": "8690526047256",
+      "name": "Eti Canga Yer Fıstıklı 45 g",
+      "price": 30,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "bc-p-bufe-ulker-dankek-magma-karamelli-65-g",
+      "code": "8690504065630",
+      "name": "Ülker Dankek Magma Karamelli 65 g",
+      "price": 25,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
       "unit": "adet"
     }
   ],

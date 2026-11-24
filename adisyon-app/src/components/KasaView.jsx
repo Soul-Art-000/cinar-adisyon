@@ -164,6 +164,27 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     setManual({ name: '', price: '', code: '' });
   };
 
+  // Okutulan barkodu barkodsuz mevcut bir ürüne bağla (yeni ürün açmadan)
+  const noBarcode = (products || []).filter(p => !String(p.barcode ?? '').trim());
+  const linkBarcode = async pid => {
+    const code = manual.code.trim();
+    const p = (products || []).find(x => x.id === pid);
+    if (!code || !p || !mutate) return;
+    if ((products || []).some(x => String(x.barcode ?? '').trim() === code)) {
+      setMsg({ type: 'err', text: `${code} zaten bir ürüne tanımlı` });
+      return;
+    }
+    try {
+      await mutate('update', 'products', p.id, { barcode: code });
+      await mutate('add', 'barcodes', null, {
+        id: 'bc-' + p.id, code, name: p.name, price: Number(p.price),
+        category: p.category, color: p.color, unit: p.unit || 'adet'
+      });
+    } catch { return; }
+    setMsg({ type: 'ok', text: `${code} → ${p.name} bağlandı` });
+    setManual({ name: '', price: '', code: '' });
+  };
+
   const count = basket.reduce((s, i) => s + i.qty, 0);
   const payInfo = PAY.find(p => p.key === paymentMethod);
 
@@ -246,6 +267,19 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
                   </button>
                 </div>
                 <p className="mt-2 text-xs text-stone-400 flex items-center gap-1"><Camera size={12} /> Tanımsız barkod okutulunca kod buraya kendiliğinden yazılır.</p>
+                {manual.code && noBarcode.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-stone-100">
+                    <div className="text-xs font-bold text-stone-500 mb-2">Ya da bu barkodu barkodsuz bir ürüne bağla:</div>
+                    <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto no-scrollbar">
+                      {noBarcode.map(p => (
+                        <button key={p.id} onClick={() => linkBarcode(p.id)}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold btn-press ${tone(p.id).card} ${tone(p.id).name}`}>
+                          {p.name} · {p.price} TL
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
