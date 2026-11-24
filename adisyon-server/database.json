@@ -163,6 +163,166 @@
       "unit": "adet",
       "cost": 23,
       "barcode": "8683789552643"
+    },
+    {
+      "id": "p-bufe-alpella-harby-sutlu-cikolata-25-g",
+      "name": "Alpella Harby Sütlü Çikolata 25 g",
+      "price": 15,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-alpella-harby-karamelli-25-g",
+      "name": "Alpella Harby Karamelli 25 g",
+      "price": 15,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-coco-star-bar-25-g",
+      "name": "Ülker Coco Star Bar 25 g",
+      "price": 15,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-metro-bar-36-g",
+      "name": "Ülker Metro Bar 36 g",
+      "price": 20,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-albeni-40-g",
+      "name": "Ülker Albeni 40 g",
+      "price": 25,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-eti-canga-yer-fistikli-45-g",
+      "name": "Eti Canga Yer Fıstıklı 45 g",
+      "price": 30,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-mcvitie-s-sutlu-kakaolu-bar",
+      "name": "Ülker McVitie's Sütlü Kakaolu Bar",
+      "price": 40,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-kahve-dunyasi-tambol-caffe",
+      "name": "Kahve Dünyası Tambol Caffe",
+      "price": 60,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-eti-karam-gurme-gofret-50-g",
+      "name": "Eti Karam Gurme Gofret 50 g",
+      "price": 35,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-kahve-dunyasi-gofrik-gofret-33-g",
+      "name": "Kahve Dünyası Gofrik Gofret 33 g",
+      "price": 40,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-eti-popkek-limonlu-kek-60-g",
+      "name": "Eti Popkek Limonlu Kek 60 g",
+      "price": 20,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-dankek-magma-cikolatali-65-g",
+      "name": "Ülker Dankek Magma Çikolatalı 65 g",
+      "price": 25,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-dankek-magma-karamelli-65-g",
+      "name": "Ülker Dankek Magma Karamelli 65 g",
+      "price": 25,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-probis-atistirmalik-75-g",
+      "name": "Ülker Probis Atıştırmalık 75 g",
+      "price": 25,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-albeni-atistirmalik-72-g",
+      "name": "Ülker Albeni Atıştırmalık 72 g",
+      "price": 35,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-ulker-cizi-kraker-70-g",
+      "name": "Ülker Çizi Kraker 70 g",
+      "price": 20,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-eti-gong-balli-hardalli-68-g",
+      "name": "Eti Gong Ballı Hardallı 68 g",
+      "price": 40,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-icim-seftali-nektari-330-ml",
+      "name": "İçim Şeftali Nektarı 330 ml",
+      "price": 30,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-caykur-didi-seftali-soguk-cay-250-ml",
+      "name": "Çaykur Didi Şeftali Soğuk Çay 250 ml",
+      "price": 30,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
+    },
+    {
+      "id": "p-bufe-uludag-gazoz-portakal-250-ml-sise",
+      "name": "Uludağ Gazoz Portakal 250 ml (şişe)",
+      "price": 40,
+      "category": "BÜFE",
+      "color": "bg-rose-500",
+      "unit": "adet"
     }
   ],
   "tables": [],
