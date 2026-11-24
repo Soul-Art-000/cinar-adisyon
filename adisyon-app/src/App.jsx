@@ -1,6 +1,6 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Cloud, CloudOff, Server, LayoutGrid, Package, Book, TrendingUp, Settings, ScanBarcode } from 'lucide-react';
+import { CloudOff } from 'lucide-react';
 
 
 
@@ -38,7 +38,7 @@ const apiInvoke = async (command, args = {}) => {
   }
 };
 
-import Sidebar from './components/Sidebar.jsx';
+import Sidebar, { MENU } from './components/Sidebar.jsx';
 
 import TablesView from './components/TablesView.jsx';
 import OrderView from './components/OrderView.jsx';
@@ -150,10 +150,15 @@ export default function App() {
 
   // Ürün değişince barcodes koleksiyonunu ürüne göre yeniden kur (kasa buradan okuyor)
   const syncBarcodes = async (productsArr) => {
-    const codes = productsArr.filter(p => p.barcode).map(p => ({
+    const fromProducts = productsArr.filter(p => p.barcode).map(p => ({
       id: 'bc-' + p.id, code: String(p.barcode).trim(), name: p.name, price: Number(p.price),
       category: p.category, color: p.color, unit: p.unit || 'adet'
     }));
+    // Barkod ekranından elle eklenen (ürüne bağlı olmayan) kayıtları koru;
+    // önceden listeyi baştan yazmak bunları siliyordu.
+    const productCodes = new Set(fromProducts.map(b => b.code));
+    const manual = barcodes.filter(b => !String(b.id).startsWith('bc-p') && !productCodes.has(String(b.code).trim()));
+    const codes = [...fromProducts, ...manual];
     await apiInvoke('mutate_db', { mutations: [{ action: 'set', collection: 'barcodes', id: null, data: codes }] });
     fetchDb();
   };
@@ -481,10 +486,10 @@ export default function App() {
 
 
   return (
-    <div className="flex flex-col md:flex-row h-[100dvh] overflow-hidden bg-gray-100 relative">
+    <div className="flex flex-col md:flex-row h-[100dvh] overflow-hidden bg-cream relative">
       {!kiosk && <Sidebar view={view} setView={setView} />}
       
-      <div className="flex-1 overflow-hidden relative">
+      <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col">
         {dbError && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[60] bg-red-600 text-white text-sm font-bold px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 max-w-lg">
             <span>{dbError}</span>
@@ -503,7 +508,7 @@ export default function App() {
             const c = veresiye.find(x => x.id === customerId);
             if (!c) return;
             const delta = type === 'payment' ? -amount : amount;
-            const log = { id: Date.now().toString(), type, amount, date: new Date().toLocaleString('tr-TR'), note };
+            const log = { id: Date.now().toString(), type, amount, date: new Date().toLocaleString('tr-TR'), createdAt: Date.now(), note };
             mutate('update', 'veresiye', customerId, { debt: Math.max(0, (c.debt || 0) + delta), logs: [...(c.logs || []), log] });
           }}
           onDeleteCustomer={id => mutate('delete', 'veresiye', id)} />}
@@ -511,27 +516,14 @@ export default function App() {
       </div>
       
       {/* MOBİL ALT MENÜ */}
-      <div className={`${kiosk ? 'hidden' : 'md:hidden'} bg-gray-900 flex justify-around items-center h-16 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)] z-50`}>
-        <button onClick={() => setView('kasa')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'kasa' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
-          <ScanBarcode size={20} />
-          <span className="text-[9px] font-bold mt-1 tracking-widest">KASA</span>
-        </button>
-        <button onClick={() => setView('urunler')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'urunler' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
-          <Package size={20} />
-          <span className="text-[9px] font-bold mt-1 tracking-widest">ÜRÜNLER</span>
-        </button>
-        <button onClick={() => setView('veresiye')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'veresiye' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
-          <Book size={20} />
-          <span className="text-[9px] font-bold mt-1 tracking-widest">VERESİYE</span>
-        </button>
-        <button onClick={() => setView('ciro')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'ciro' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
-          <TrendingUp size={20} />
-          <span className="text-[9px] font-bold mt-1 tracking-widest">CİRO</span>
-        </button>
-        <button onClick={() => setView('ayarlar')} className={`flex-1 flex flex-col items-center justify-center h-full transition-colors ${view === 'ayarlar' ? 'text-white border-t-2 border-primary' : 'text-gray-500 hover:text-gray-300 border-t-2 border-transparent'}`}>
-          <Settings size={20} />
-          <span className="text-[9px] font-bold mt-1 tracking-widest">AYARLAR</span>
-        </button>
+      <div className={`${kiosk ? 'hidden' : 'md:hidden'} bg-white border-t border-stone-100 flex justify-around items-center h-16 shrink-0 z-50 px-1`}>
+        {MENU.filter(m => m.key !== 'barkod').map(({ key, label, Icon }) => (
+          <button key={key} onClick={() => setView(key)}
+            className={`flex-1 mx-0.5 flex flex-col items-center justify-center h-12 rounded-2xl transition-colors ${view === key ? 'bg-amber-100 text-amber-900' : 'text-stone-400'}`}>
+            <Icon size={20} />
+            <span className="text-[10px] font-bold mt-0.5">{label}</span>
+          </button>
+        ))}
       </div>
 
       {!isOnline && (

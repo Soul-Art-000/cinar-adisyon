@@ -48,42 +48,42 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
     !search || b.code.includes(search) || b.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50">
-      <div className="px-8 py-6 border-b border-gray-200 bg-white shadow-sm shrink-0">
-        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2"><ScanBarcode className="text-primary" /> Barkod Yönetimi</h1>
-        <p className="text-sm text-gray-500 mt-1">Barkod okutun, ürünle eşleştirin. Kasa ve kantin bu kayıtları kullanır.</p>
+    <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-cream">
+      <div className="px-8 pt-6 pb-2 shrink-0">
+        <h1 className="text-2xl font-extrabold text-stone-800 tracking-tight flex items-center gap-2"><ScanBarcode className="text-primary" /> Barkod Yönetimi</h1>
+        <p className="text-sm text-stone-500 mt-1">Barkod okutun, ürünle eşleştirin. Kasa ve kantin bu kayıtları kullanır.</p>
       </div>
 
       <div className="h-full overflow-y-auto no-scrollbar p-8 space-y-6">
         {/* Okutma + eşleştirme */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-4 flex gap-3 border-b border-gray-100">
+        <div className="bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgba(120,80,20,0.06)] overflow-hidden">
+          <div className="p-4 flex gap-3 border-b border-stone-100">
             <input
               ref={inputRef} autoFocus value={code}
               data-barcode-input
               onChange={e => setCode(e.target.value)}
               placeholder="Barkod okut / yaz..."
-              className="flex-1 border border-gray-200 rounded-xl px-4 py-3 font-mono focus:border-primary outline-none"
+              className="flex-1 border border-stone-200 rounded-xl px-4 py-3 font-mono focus:border-primary outline-none"
             />
             <button onClick={() => check()} className="bg-primary text-white px-5 rounded-xl font-bold btn-press flex items-center gap-2"><Search size={18} /> ARA</button>
           </div>
 
           <div className="p-4 grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase block mb-1">Barkod</label>
-              <input value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} className="w-full border border-gray-200 rounded-lg px-3 py-2 font-mono text-sm" />
+              <label className="text-xs font-bold text-stone-500 uppercase block mb-1">Barkod</label>
+              <input value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 font-mono text-sm" />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase block mb-1">Ürün Adı</label>
-              <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+              <label className="text-xs font-bold text-stone-500 uppercase block mb-1">Ürün Adı</label>
+              <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 text-sm" />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase block mb-1">Fiyat</label>
-              <input type="number" min="0" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+              <label className="text-xs font-bold text-stone-500 uppercase block mb-1">Fiyat</label>
+              <input type="number" min="0" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 text-sm" />
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase block mb-1">Kategori</label>
-              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+              <label className="text-xs font-bold text-stone-500 uppercase block mb-1">Kategori</label>
+              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 text-sm bg-white">
                 {[...new Set([...(categories || []), 'KANTİN'])].map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -100,10 +100,10 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
 
           {products.length > 0 && (
             <div className="mx-4 mb-4">
-              <div className="text-xs font-bold text-gray-400 uppercase mb-2 flex items-center gap-1"><Tag size={12} /> Mevcut ürüne bağla</div>
+              <div className="text-xs font-bold text-stone-400 uppercase mb-2 flex items-center gap-1"><Tag size={12} /> Mevcut ürüne bağla</div>
               <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto no-scrollbar">
                 {products.slice(0, 40).map(p => (
-                  <button key={p.id} onClick={() => linkExisting(p)} className="px-3 py-1.5 bg-gray-50 hover:bg-primary hover:text-white border border-gray-200 rounded-lg text-xs font-bold transition-colors">
+                  <button key={p.id} onClick={() => linkExisting(p)} className="px-3 py-1.5 bg-stone-50 hover:bg-primary hover:text-white border border-stone-200 rounded-lg text-xs font-bold transition-colors">
                     {p.name} · {p.price} TL
                   </button>
                 ))}
@@ -113,13 +113,13 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
         </div>
 
         {/* Liste */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80 flex items-center gap-3">
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Barkod veya ürün ara..." className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm" />
-            <span className="text-xs font-bold text-gray-400">{list.length} kayıt</span>
+        <div className="bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgba(120,80,20,0.06)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-stone-100 bg-stone-50/80 flex items-center gap-3">
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Barkod veya ürün ara..." className="flex-1 border border-stone-200 rounded-xl px-3 py-2 text-sm" />
+            <span className="text-xs font-bold text-stone-400">{list.length} kayıt</span>
           </div>
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50/50 text-xs uppercase text-gray-400 border-b border-gray-100">
+          <table className="w-full text-left text-sm text-stone-600">
+            <thead className="bg-stone-50/50 text-xs uppercase text-stone-400 border-b border-stone-100">
               <tr>
                 <th className="px-4 py-3 font-bold">Barkod</th>
                 <th className="px-4 py-3 font-bold">Ürün</th>
@@ -128,19 +128,19 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
                 <th className="px-4 py-3 font-bold text-right">Sil</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-stone-50">
               {list.map(b => (
-                <tr key={b.id} className="hover:bg-gray-50/50">
+                <tr key={b.id} className="hover:bg-stone-50/50">
                   <td className="px-4 py-2.5 font-mono text-xs">{b.code}</td>
-                  <td className="px-4 py-2.5 font-medium text-gray-800">{b.name}</td>
-                  <td className="px-4 py-2.5"><span className="bg-gray-100 px-2 py-0.5 rounded text-xs font-bold">{b.category}</span></td>
+                  <td className="px-4 py-2.5 font-medium text-stone-800">{b.name}</td>
+                  <td className="px-4 py-2.5"><span className="bg-stone-100 px-2 py-0.5 rounded text-xs font-bold">{b.category}</span></td>
                   <td className="px-4 py-2.5 text-right font-bold">{b.price} TL</td>
                   <td className="px-4 py-2.5 text-right">
-                    <button onClick={() => confirm('Silinsin mi?') && mutate('delete', 'barcodes', b.id)} className="p-1.5 text-gray-400 hover:text-red-500"><Trash2 size={16} /></button>
+                    <button onClick={() => confirm('Silinsin mi?') && mutate('delete', 'barcodes', b.id)} className="p-1.5 text-stone-400 hover:text-red-500"><Trash2 size={16} /></button>
                   </td>
                 </tr>
               ))}
-              {list.length === 0 && <tr><td colSpan="5" className="px-4 py-10 text-center text-gray-400">Kayıt yok</td></tr>}
+              {list.length === 0 && <tr><td colSpan="5" className="px-4 py-10 text-center text-stone-400">Kayıt yok</td></tr>}
             </tbody>
           </table>
         </div>

@@ -1,6 +1,29 @@
 import { useState, useEffect, useRef } from 'react';
-import { ScanBarcode, Plus, Trash2, Search, Camera, Check, X, LayoutGrid } from 'lucide-react';
+import { ScanBarcode, Plus, Trash2, Search, Camera, Check, X, ChevronDown, Banknote, CreditCard, BookUser, Minus } from 'lucide-react';
 import { lookupBarcode, listenBarcode } from '../barcode.js';
+
+// Kart renkleri: ürün id'sinden sabit bir pastel seçilir (her açılışta aynı renk).
+// Sınıflar tam yazılı kalmalı ki Tailwind derlemede bulsun.
+const PALETTE = [
+  { card: 'bg-rose-100 hover:bg-rose-200', name: 'text-rose-900', price: 'text-rose-700' },
+  { card: 'bg-amber-100 hover:bg-amber-200', name: 'text-amber-900', price: 'text-amber-700' },
+  { card: 'bg-emerald-100 hover:bg-emerald-200', name: 'text-emerald-900', price: 'text-emerald-700' },
+  { card: 'bg-sky-100 hover:bg-sky-200', name: 'text-sky-900', price: 'text-sky-700' },
+  { card: 'bg-violet-100 hover:bg-violet-200', name: 'text-violet-900', price: 'text-violet-700' },
+  { card: 'bg-lime-100 hover:bg-lime-200', name: 'text-lime-900', price: 'text-lime-700' },
+  { card: 'bg-orange-100 hover:bg-orange-200', name: 'text-orange-900', price: 'text-orange-700' },
+  { card: 'bg-teal-100 hover:bg-teal-200', name: 'text-teal-900', price: 'text-teal-700' },
+];
+const tone = id => {
+  let h = 0;
+  for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+};
+const PAY = [
+  { key: 'nakit', label: 'Nakit', Icon: Banknote, on: 'bg-emerald-500 text-white border-emerald-500' },
+  { key: 'kart', label: 'Kart', Icon: CreditCard, on: 'bg-sky-500 text-white border-sky-500' },
+  { key: 'veresiye', label: 'Veresiye', Icon: BookUser, on: 'bg-violet-500 text-white border-violet-500' },
+];
 
 // KANTİN: barkod okut → fiyat göster → satışa ekle → tahsil et
 export default function KasaView({ products, colors, onAddProduct, mutate, customers = [] }) {
@@ -14,6 +37,7 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
   const [lastSale, setLastSale] = useState(null);
   const [manual, setManual] = useState({ name: '', price: '', code: '' });
   const [pickSearch, setPickSearch] = useState('');
+  const [showDefine, setShowDefine] = useState(false);
   const inputRef = useRef(null);
 
   const total = basket.reduce((s, i) => s + Number(i.price) * i.qty, 0);
@@ -47,6 +71,7 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
       } else {
         setMsg({ type: 'err', text: `Barkod tanımsız: ${raw} — aşağıdan tanımlayın` });
         setManual(m => ({ ...m, code: raw }));
+        setShowDefine(true);
       }
     }
     setCode('');
@@ -96,7 +121,7 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
 
     // Veresiye: borcu müşteriye yaz
     if (paymentMethod === 'veresiye') {
-      const log = { id: Date.now().toString(), type: 'debt', amount: total, date: new Date().toLocaleString('tr-TR'), note: 'Kasa satışı' };
+      const log = { id: Date.now().toString(), type: 'debt', amount: total, date: new Date().toLocaleString('tr-TR'), createdAt: Date.now(), note: 'Kasa satışı' };
       if (debtorId) {
         const c = customers.find(x => x.id === debtorId);
         if (c) await mutate('update', 'veresiye', debtorId, { debt: (c.debt || 0) + total, logs: [...(c.logs || []), log] });
@@ -119,6 +144,10 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     const code = manual.code.trim();
     const name = manual.name.trim();
     const price = Number(manual.price);
+    if ((products || []).some(p => String(p.barcode ?? '').trim() === code)) {
+      setMsg({ type: 'err', text: `${code} zaten bir ürüne tanımlı — fiyatı Ürünler ekranından değiştirin` });
+      return;
+    }
     // Ürün listesine de yaz ki "Ürünler" ekranında görünsün, fiyat tek kaynaktan yönetilsin
     if (onAddProduct) {
       onAddProduct({
@@ -135,137 +164,156 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     setManual({ name: '', price: '', code: '' });
   };
 
-  return (
-    <div className="flex-1 flex flex-col md:flex-row h-screen overflow-hidden bg-gray-100">
-      {/* BARKOD GİRİŞİ */}
-      <div className="flex-1 flex flex-col min-h-0">
-        <div className="bg-gray-800 text-white px-6 py-4 shrink-0">
-          <h1 className="text-xl font-bold flex items-center gap-2"><ScanBarcode /> Yazar Kasa — Kantin</h1>
-          <p className="text-xs text-gray-400 mt-0.5">Barkod okutun veya kodu yazıp Enter'a basın</p>
-        </div>
+  const count = basket.reduce((s, i) => s + i.qty, 0);
+  const payInfo = PAY.find(p => p.key === paymentMethod);
 
-        <div className="p-6 space-y-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 flex gap-3">
+  return (
+    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-cream">
+      {/* SOL: okutma + ürün kartları */}
+      <div className="flex-1 flex flex-col min-h-0 min-w-0">
+        <div className="px-5 md:px-7 pt-5 pb-3 shrink-0 space-y-3">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-extrabold text-stone-800 tracking-tight">Kasa</h1>
+            {lastSale && (
+              <div className="text-xs font-semibold text-emerald-800 bg-emerald-100 rounded-full px-3 py-1.5">
+                Son satış {lastSale.at} · {lastSale.total} TL
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-2 bg-white border-2 border-amber-300 focus-within:border-primary rounded-2xl p-1.5 pl-4 items-center shadow-sm">
+            <ScanBarcode className="text-amber-500 shrink-0" size={22} />
             <input
               ref={inputRef}
               autoFocus
               value={code}
               data-barcode-input
               onChange={e => setCode(e.target.value)}
-              placeholder="Barkod no..."
-              className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-lg font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+              placeholder="Barkod okutun ya da yazıp Enter'a basın"
+              className="flex-1 min-w-0 bg-transparent py-2.5 text-lg font-mono outline-none placeholder:font-sans placeholder:text-stone-400"
             />
-            <button onClick={() => scan()} className="bg-primary text-white px-5 rounded-xl font-bold btn-press flex items-center gap-2">
-              <Search size={18} /> SORGULA
+            <button onClick={() => scan()} className="bg-primary text-white px-4 py-2.5 rounded-xl font-bold btn-press flex items-center gap-1.5">
+              <Search size={18} /> Sorgula
             </button>
           </div>
 
           {msg && (
-            <div className={`px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-between ${msg.type === 'ok' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+            <div className={`px-4 py-2.5 rounded-2xl text-sm font-semibold flex items-center justify-between ${msg.type === 'ok' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
               <span>{msg.text}</span>
-              <button onClick={() => setMsg(null)}><X size={16} /></button>
+              <button onClick={() => setMsg(null)} aria-label="Kapat"><X size={16} /></button>
             </div>
           )}
 
-          {/* BARKODSUZ ELLE SEÇİM — ürün ızgarası */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between gap-3">
-              <span className="font-bold text-sm text-gray-700 flex items-center gap-2"><LayoutGrid size={16} className="text-primary" /> Elle Ürün Seç</span>
-              <input value={pickSearch} onChange={e => setPickSearch(e.target.value)}
-                placeholder="Ürün ara..."
-                className="w-48 border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
-            </div>
-            <div className="p-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-64 overflow-y-auto no-scrollbar">
-              {pickable.map(p => (
+          <input value={pickSearch} onChange={e => setPickSearch(e.target.value)}
+            placeholder="Ürün ara…"
+            className="w-full md:w-72 bg-white border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary" />
+        </div>
+
+        {/* Ürün kartları */}
+        <div className="flex-1 overflow-y-auto no-scrollbar px-5 md:px-7 pb-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3">
+            {pickable.map(p => {
+              const t = tone(p.id);
+              const inBasket = basket.find(b => b.id === p.id)?.qty;
+              return (
                 <button key={p.id} onClick={() => addProduct(p)}
-                  className="text-left p-2.5 rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 btn-press">
-                  <div className="text-xs font-bold text-gray-800 leading-tight line-clamp-2">{p.name}</div>
-                  <div className="text-sm font-bold text-primary mt-1">{p.price} TL</div>
-                  <div className="text-[10px] text-gray-400 font-mono truncate">{p.barcode || 'barkodsuz'}</div>
+                  className={`relative text-left p-4 rounded-3xl min-h-[104px] flex flex-col justify-between btn-press ${t.card}`}>
+                  {inBasket > 0 && (
+                    <span className="absolute top-2.5 right-2.5 min-w-6 h-6 px-1.5 rounded-full bg-white text-stone-800 text-xs font-extrabold flex items-center justify-center shadow-sm">{inBasket}</span>
+                  )}
+                  <div className={`text-sm font-bold leading-snug line-clamp-2 pr-6 ${t.name}`}>{p.name}</div>
+                  <div className={`text-xl font-extrabold mt-2 ${t.price}`}>{p.price} TL</div>
                 </button>
-              ))}
-              {pickable.length === 0 && <p className="col-span-full text-center text-gray-400 text-sm py-6">Ürün bulunamadı</p>}
-            </div>
+              );
+            })}
+            {pickable.length === 0 && <p className="col-span-full text-center text-stone-400 text-sm py-10">Ürün bulunamadı</p>}
           </div>
 
-          {/* Barkod tanımla (ürün ekleme) */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 font-bold text-sm text-gray-700 flex items-center gap-2">
-              <Plus size={16} className="text-primary" /> Barkod Tanımla / Ürün Ekle
-            </div>
-            <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
-              <input value={manual.code} onChange={e => setManual({ ...manual, code: e.target.value })} placeholder="Barkod" className="border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono" />
-              <input value={manual.name} onChange={e => setManual({ ...manual, name: e.target.value })} placeholder="Ürün adı" className="border border-gray-200 rounded-lg px-3 py-2 text-sm" />
-              <input value={manual.price} onChange={e => setManual({ ...manual, price: e.target.value })} type="number" min="0" placeholder="Fiyat" className="border border-gray-200 rounded-lg px-3 py-2 text-sm" />
-              <button onClick={defineBarcode} disabled={!manual.code || !manual.name || !manual.price} className="bg-primary disabled:opacity-40 text-white rounded-lg font-bold btn-press flex items-center justify-center gap-2">
-                <Check size={16} /> KAYDET
-              </button>
-            </div>
-            <p className="px-4 pb-3 text-xs text-gray-400 flex items-center gap-1"><Camera size={12} /> Okutulan tanımsız barkod otomatik olarak bu alana yazılır; sadece ad + fiyat girmeniz yeterli.</p>
+          {/* Barkod tanımla — kapalı durur, tanımsız barkod okutulunca açılır */}
+          <div className="mt-5 bg-white rounded-3xl border border-stone-200 overflow-hidden">
+            <button onClick={() => setShowDefine(v => !v)} className="w-full px-5 py-3.5 font-bold text-sm text-stone-700 flex items-center justify-between">
+              <span className="flex items-center gap-2"><Plus size={16} className="text-primary" /> Barkod tanımla / ürün ekle</span>
+              <ChevronDown size={18} className={`text-stone-400 transition-transform ${showDefine ? 'rotate-180' : ''}`} />
+            </button>
+            {showDefine && (
+              <div className="px-5 pb-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-2.5">
+                  <input value={manual.code} onChange={e => setManual({ ...manual, code: e.target.value })} placeholder="Barkod" className="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm font-mono outline-none focus:border-primary" />
+                  <input value={manual.name} onChange={e => setManual({ ...manual, name: e.target.value })} placeholder="Ürün adı" className="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-primary" />
+                  <input value={manual.price} onChange={e => setManual({ ...manual, price: e.target.value })} type="number" min="0" placeholder="Fiyat (TL)" className="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-primary" />
+                  <button onClick={defineBarcode} disabled={!manual.code || !manual.name || !manual.price} className="bg-primary disabled:opacity-40 text-white rounded-xl font-bold py-2.5 btn-press flex items-center justify-center gap-2">
+                    <Check size={16} /> Kaydet
+                  </button>
+                </div>
+                <p className="mt-2 text-xs text-stone-400 flex items-center gap-1"><Camera size={12} /> Tanımsız barkod okutulunca kod buraya kendiliğinden yazılır.</p>
+              </div>
+            )}
           </div>
-
-          {lastSale && (
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-sm text-green-800">
-              <div className="font-bold mb-1">Son satış — {lastSale.at} ({lastSale.paymentMethod})</div>
-              {lastSale.items.map(i => <div key={i.code}>{i.qty} × {i.name} = {i.qty * i.price} TL</div>)}
-              <div className="font-bold mt-1">Toplam: {lastSale.total} TL</div>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* SEPET */}
-      <div className="w-full md:w-[380px] shrink-0 bg-white border-l border-gray-200 flex flex-col h-full">
-        <div className="px-5 py-4 border-b border-gray-100 bg-gray-50 font-bold text-gray-700 flex justify-between">
-          <span>SEPET</span>
-          <span className="text-gray-400">{basket.reduce((s, i) => s + i.qty, 0)} ürün</span>
+      {/* SAĞ: sepet */}
+      <div className="w-full md:w-[380px] shrink-0 bg-white md:rounded-l-[2rem] md:my-3 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_8px_30px_rgba(120,80,20,0.08)] flex flex-col">
+        <div className="px-6 pt-3 md:pt-5 pb-2 md:pb-3 flex items-baseline justify-between">
+          <span className="text-lg font-extrabold text-stone-800">Sepet</span>
+          <span className="text-sm font-semibold text-amber-700">{count} ürün</span>
         </div>
-        <div className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-2">
-          {basket.length === 0 && <p className="text-center text-gray-400 text-sm py-10">Barkod okutarak başlayın</p>}
-          {basket.map(it => (
-            <div key={it.code} className="bg-gray-50 border border-gray-100 rounded-xl p-3 flex items-center justify-between">
-              <div className="min-w-0">
-                <div className="font-semibold text-gray-800 text-sm truncate">{it.name}</div>
-                <div className="text-xs text-gray-400 font-mono">{it.code}</div>
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => changeQty(it.code, -1)} className="w-7 h-7 rounded-lg bg-white border border-gray-200 btn-press">−</button>
-                <span className="w-8 text-center font-bold text-primary">{it.qty}</span>
-                <button onClick={() => changeQty(it.code, 1)} className="w-7 h-7 rounded-lg bg-white border border-gray-200 btn-press">+</button>
-                <span className="w-20 text-right font-bold text-gray-700">{it.qty * it.price} TL</span>
-              </div>
+        <div className="md:flex-1 max-h-28 md:max-h-none overflow-y-auto no-scrollbar px-4 space-y-2">
+          {basket.length === 0 && (
+            <div className="text-center text-stone-400 text-sm py-3 md:py-12">
+              <ScanBarcode size={36} className="hidden md:block mx-auto mb-2 text-amber-300" />
+              Barkod okutun ya da karta dokunun
             </div>
-          ))}
+          )}
+          {basket.map(it => {
+            const t = tone(it.id);
+            return (
+              <div key={it.code} className="rounded-2xl p-3 flex items-center gap-3 bg-stone-50">
+                <div className={`w-2 self-stretch rounded-full ${t.card.split(' ')[0]}`} />
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-stone-800 text-sm truncate">{it.name}</div>
+                  <div className="text-xs text-stone-400">{it.price} TL</div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button onClick={() => changeQty(it.code, -1)} aria-label="Azalt" className="w-8 h-8 rounded-full bg-white border border-stone-200 flex items-center justify-center btn-press"><Minus size={14} /></button>
+                  <span className="w-7 text-center font-extrabold text-stone-800">{it.qty}</span>
+                  <button onClick={() => changeQty(it.code, 1)} aria-label="Artır" className="w-8 h-8 rounded-full bg-white border border-stone-200 flex items-center justify-center btn-press"><Plus size={14} /></button>
+                </div>
+                <span className="w-16 text-right font-extrabold text-stone-800">{it.qty * it.price} TL</span>
+              </div>
+            );
+          })}
         </div>
-        <div className="border-t border-gray-200 p-4 space-y-3">
-          <div className="flex gap-2">
-            {['nakit', 'kart', 'veresiye'].map(m => (
-              <button key={m} onClick={() => setPaymentMethod(m)}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-bold border-2 btn-press ${paymentMethod === m ? 'border-primary bg-primary/10 text-primary' : 'border-gray-200 text-gray-500'}`}>
-                {m === 'veresiye' ? 'VERESİYE' : m.toUpperCase()}
+
+        <div className="p-3 md:p-4 space-y-2 md:space-y-3 border-t border-stone-100">
+          <div className="grid grid-cols-3 gap-2">
+            {PAY.map(({ key, label, Icon, on }) => (
+              <button key={key} onClick={() => setPaymentMethod(key)}
+                className={`py-1.5 md:py-2.5 rounded-2xl text-sm font-bold border-2 btn-press flex md:flex-col justify-center gap-1.5 md:gap-0.5 items-center ${paymentMethod === key ? on : 'border-stone-200 text-stone-500 bg-white'}`}>
+                <Icon size={18} /> {label}
               </button>
             ))}
           </div>
           {paymentMethod === 'veresiye' && (
-            <div className="space-y-2">
+            <div className="space-y-2 bg-violet-50 rounded-2xl p-3">
               <select value={debtorId} onChange={e => setDebtorId(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-                <option value="">— Müşteri seç —</option>
+                className="w-full border border-violet-200 rounded-xl px-3 py-2 text-sm bg-white outline-none">
+                <option value="">Müşteri seçin</option>
                 {(customers || []).map(c => <option key={c.id} value={c.id}>{c.name} ({(c.debt || 0)} TL)</option>)}
               </select>
               <input value={newDebtor} onChange={e => setNewDebtor(e.target.value)}
-                placeholder="veya yeni müşteri adı"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+                placeholder="ya da yeni müşteri adı"
+                className="w-full border border-violet-200 rounded-xl px-3 py-2 text-sm bg-white outline-none" />
             </div>
           )}
-          <div className="flex justify-between items-center">
-            <span className="font-bold text-gray-600 text-sm uppercase">Toplam</span>
-            <span className="font-bold text-2xl text-primary">{total} TL</span>
+          <div className="flex justify-between items-end px-1">
+            <span className="font-bold text-stone-500 text-sm">Toplam</span>
+            <span className="font-extrabold text-3xl md:text-4xl text-stone-800 tracking-tight">{total} <span className="text-xl text-stone-400">TL</span></span>
           </div>
-          <button onClick={pay} disabled={!basket.length} className="w-full bg-gray-800 disabled:bg-gray-200 text-white py-3.5 rounded-xl font-bold btn-press">
-            TAHSİL ET
+          <button onClick={pay} disabled={!basket.length} className="w-full bg-primary disabled:bg-stone-200 disabled:text-stone-400 text-white py-3 md:py-4 rounded-2xl text-lg font-extrabold btn-press">
+            Tahsil et{basket.length ? ` · ${payInfo.label}` : ''}
           </button>
-          <button onClick={() => setBasket([])} disabled={!basket.length} className="w-full text-red-500 text-sm font-bold flex items-center justify-center gap-1 disabled:opacity-40">
+          <button onClick={() => setBasket([])} disabled={!basket.length} className="w-full text-rose-500 text-sm font-bold flex items-center justify-center gap-1 disabled:opacity-0">
             <Trash2 size={14} /> Sepeti temizle
           </button>
         </div>
