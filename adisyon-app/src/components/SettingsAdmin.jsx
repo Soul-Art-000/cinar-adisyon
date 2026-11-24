@@ -60,7 +60,7 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
             <button
               onClick={async () => {
                 try {
-                  const db = isTauri() ? await invoke('get_db') : await fetch('/api/db', {method: 'POST'}).then(r => r.json());
+                  const db = isTauri() ? await invoke('get_db') : await fetch('/api/db').then(r => r.json());
                   const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a');
@@ -115,6 +115,76 @@ export default function SettingsAdmin({ zones, categories, onAddZone, onDeleteZo
               ⬇️ Config Dosyası Yükle (İçe Aktar)
             </button>
           </div>
+          <button
+            onClick={async () => {
+              try {
+                let text;
+                if (isTauri()) {
+                  const { open } = await import('@tauri-apps/plugin-dialog');
+                  const { readTextFile } = await import('@tauri-apps/plugin-fs');
+                  const selected = await open({ filters: [{ name: 'JSON', extensions: ['json'] }], multiple: false });
+                  if (!selected) return;
+                  text = await readTextFile(selected);
+                } else {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = '.json';
+                  const file = await new Promise(r => { input.onchange = () => r(input.files[0]); input.click(); });
+                  if (!file) return;
+                  text = await file.text();
+                }
+                const src = JSON.parse(text);
+                const db = isTauri() ? await invoke('get_db') : await fetch('/api/db').then(r => r.json());
+                const norm = s => String(s || '').trim().toLocaleLowerCase('tr-TR');
+                const products = [...(db.products || [])];
+                const ids = new Set(products.map(p => p.id)), names = new Set(products.map(p => norm(p.name)));
+                const codes = new Set([...(db.barcodes || []).map(b => String(b.code).trim()), ...products.filter(p => p.barcode).map(p => String(p.barcode).trim())]);
+                let addedP = 0, addedB = 0;
+                for (const p of src.products || []) {
+                  if (!p?.name || ids.has(p.id) || names.has(norm(p.name))) continue;
+                  const item = { ...p };
+                  if (item.barcode && codes.has(String(item.barcode).trim())) item.barcode = null;
+                  if (item.barcode) codes.add(String(item.barcode).trim());
+                  products.push(item); ids.add(item.id); names.add(norm(item.name)); addedP++;
+                }
+                const barcodes = [...(db.barcodes || [])];
+                for (const p of products) {
+                  const c = p.barcode && String(p.barcode).trim();
+                  if (c && !barcodes.some(b => String(b.code).trim() === c)) {
+                    barcodes.push({ id: 'bc-' + p.id, code: c, name: p.name, price: Number(p.price), category: p.category, color: p.color, unit: p.unit || 'adet' });
+                    addedB++;
+                  }
+                }
+                for (const b of src.barcodes || []) {
+                  const c = String(b?.code || '').trim();
+                  if (!c || barcodes.some(x => String(x.code).trim() === c)) continue;
+                  barcodes.push(b); addedB++;
+                }
+                const cats = [...(db.settings?.categories || [])];
+                for (const p of products) if (p.category && !cats.includes(p.category)) cats.push(p.category);
+                if (!addedP && !addedB) { alert('Dosyadaki ürünlerin hepsi zaten kayıtlı. Hiçbir şey değişmedi.'); return; }
+                if (!confirm(`${addedP} yeni ürün ve ${addedB} barkod eklenecek. Mevcut ürünler, veresiye ve satışlar değişmez. Devam edilsin mi?`)) return;
+                const mutations = [
+                  { action: 'set', collection: 'products', id: null, data: products },
+                  { action: 'set', collection: 'barcodes', id: null, data: barcodes },
+                  { action: 'set', collection: 'settings', id: null, data: { ...(db.settings || {}), categories: cats } },
+                ];
+                if (isTauri()) {
+                  await invoke('mutate_db', { mutations });
+                } else {
+                  const res = await fetch('/api/mutate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mutations }) });
+                  if (!res.ok) throw new Error(await res.text());
+                }
+                alert(`${addedP} ürün ve ${addedB} barkod eklendi.`);
+                window.location.reload();
+              } catch (err) {
+                if (err) alert('HATA: ' + (err.message || err));
+              }
+            }}
+            className="btn-press mt-3 w-full bg-amber-100 hover:bg-amber-200 text-amber-900 px-6 py-3 rounded-2xl font-bold"
+          >
+            ➕ Sadece Ürünleri Ekle (veresiye ve satışlar korunur)
+          </button>
           <p className="text-xs text-stone-500 mt-3">Bu özelliği kullanarak menülerinizi flash belleğe yedekleyebilir veya başka bir bilgisayara birebir aktarabilirsiniz.</p>
         </div>
 
