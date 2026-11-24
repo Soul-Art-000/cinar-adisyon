@@ -31,21 +31,25 @@ export const sellBarcode = (code, qty = 1, paymentMethod = 'nakit') =>
   });
 
 // Global okuyucu dinleyicisi. onScan(code) çağrılır. enabled=false iken pasif.
-// Input odaklıyken de çalışır: okuyucu seri yazar + Enter basar, bu desen
-// insan yazımından ayırt edilebilir (>=4 karakter ve hepsi <=120 ms arayla).
-// Aynı barkod 300 ms içinde ikinci kez gelirse yut: bazı okuyucular
-// Enter'ı iki kez (ya da karakter + Enter + Enter) gönderir → ürün 2 kez eklenir.
+// Okuyucu seri yazar + Enter basar (>=4 karakter, hepsi <=120 ms arayla).
+//
+// Çift okuma koruması (kayan pencere): aynı barkod, bir önceki okumasından
+// DUPE_MS geçmeden tekrar gelirse yutulur ve pencere uzar. Böylece:
+//  - Enter'ı iki kez yollayan okuyucular (CR+LF) tek sayılır,
+//  - ürün okuyucunun önünde tutulurken sürekli/otomatik modda tekrar tekrar
+//    okunması da tek sayılır (sabit 1,5 sn penceresi bunu kaçırıyordu).
+// Aynı üründen 2 adet için sepette + kullanılır ya da ürün çekilip ~2 sn sonra
+// yeniden okutulur.
+const DUPE_MS = 2000;
 function dedupe(fn) {
   let lastCode = '';
-  let lastScanAt = 0;
+  let lastSeenAt = 0;
   return code => {
     const now = Date.now();
-    // Aynı barkod kısa sürede hiç tekrar edilmez: bazı okuyucular tek okutmada
-    // olayı 2 kez yollar. Tekrar okutma için ürünü sepetten + ile çoğalt.
-    if (code === lastCode && now - lastScanAt < 1500) return;
+    const dup = code === lastCode && now - lastSeenAt < DUPE_MS;
     lastCode = code;
-    lastScanAt = now;
-    fn(code);
+    lastSeenAt = now;
+    if (!dup) fn(code);
   };
 }
 
@@ -64,15 +68,19 @@ export function listenBarcode(onScan, enabled = true) {
     last = now;
 
     if (e.key === 'Enter') {
-      // Okuyucu gecikmeli Enter basarsa (IME/dead key) buffer zaten boşalabilir;
-      // alanın kendi değerini okuyucu yazdıysa onu kullan.
-      const fieldVal = inField ? String(e.target.value ?? '').trim() : '';
+      if (e.repeat) { e.preventDefault(); return; }
+      // Alan değeri yalnız barkod alanında (data-barcode-input) kullanılır:
+      // orada elle yazılıp Enter'a basılan kod da okutma sayılır, yavaş
+      // (Bluetooth) okuyucunun bölünmüş tamponu da alandan tamamlanır.
+      // Diğer alanlarda (müşteri adı, arama...) Enter barkod sanılmaz.
+      const scanField = inField && e.target.hasAttribute?.('data-barcode-input');
+      const fieldVal = scanField ? String(e.target.value ?? '').trim() : '';
       let code = buf.trim();
-      // Alan değeri kodun devamı/başı olabilir: alan değeri kodu içeriyorsa onu al
       if (!code && fieldVal.length >= 4) code = fieldVal;
       else if (code && fieldVal.length >= code.length && fieldVal.includes(code)) code = fieldVal;
       buf = '';
-      // Form alanında kısa yazım insan eliyle Enter'dır; okuyucu >=4 hane basar
+      // Başka bir form alanında hızlı yazılmış metin barkod değildir (gerçek barkod rakamdır)
+      if (inField && !scanField && !/^\d{6,}$/.test(code)) return;
       if (code.length >= 4) {
         e.preventDefault();
         emit(code);

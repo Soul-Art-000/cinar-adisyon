@@ -28,17 +28,10 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     setMsg({ type: 'ok', text: `${p.name} eklendi` });
   };
 
-  // Okuyucu gecikmeli Enter basarsa aynı okutma iki kez gelir (buffer + alan değeri);
-  // aynı kodu 1,5 sn içinde ikinci kez işleme alma.
-  const lastScan = useRef({ code: '', at: 0 });
-
+  // Tüm okutmalar tek yoldan gelir (listenBarcode → scan); çift okuma koruması
+  // barcode.js'teki kayan pencerede. SORGULA butonu da aynı fonksiyonu çağırır.
   const scan = async c => {
     const raw = (c ?? code).trim();
-    if (raw && lastScan.current.code === raw && Date.now() - lastScan.current.at < 1500) {
-      setCode('');
-      return;
-    }
-    lastScan.current = { code: raw, at: Date.now() };
     if (!raw) return;
     const r = await lookupBarcode(raw);
     if (r.data?.found) {
@@ -70,8 +63,11 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
     });
   };
 
-  // Okuyucu her yerde çalışsın (kasa modunda)
-  useEffect(() => listenBarcode(scan), []);
+  // Okuyucu her yerde çalışsın (kasa modunda). Dinleyici bir kez kurulur ama her
+  // zaman güncel scan'i çağırır (yoksa ilk render'daki boş ürün listesine bakar).
+  const scanRef = useRef(scan);
+  scanRef.current = scan;
+  useEffect(() => listenBarcode(c => scanRef.current(c)), []);
 
   const changeQty = (code, d) => setBasket(prev =>
     prev.map(x => x.code === code ? { ...x, qty: x.qty + d } : x).filter(x => x.qty > 0));
@@ -154,12 +150,8 @@ export default function KasaView({ products, colors, onAddProduct, mutate, custo
               ref={inputRef}
               autoFocus
               value={code}
+              data-barcode-input
               onChange={e => setCode(e.target.value)}
-              onKeyDown={e => {
-                // Okutma yolunu global dinleyici yönetir; burada yalnız "SORGULA" için Enter
-                if (e.key !== 'Enter' || e.defaultPrevented) return;
-                scan();
-              }}
               placeholder="Barkod no..."
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-lg font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none"
             />

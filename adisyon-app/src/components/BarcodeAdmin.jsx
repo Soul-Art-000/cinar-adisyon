@@ -10,17 +10,8 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
   const [form, setForm] = useState({ code: '', name: '', price: '', category: categories[0] || 'KANTİN' });
   const inputRef = useRef(null);
 
-  // Okuyucu gecikmeli Enter basarsa aynı okutma iki kez gelir (buffer + alan değeri);
-  // aynı kodu 1,5 sn içinde ikinci kez işleme alma.
-  const lastScan = useRef({ code: '', at: 0 });
-
   const check = async c => {
     const raw = (c ?? code).trim();
-    if (raw && lastScan.current.code === raw && Date.now() - lastScan.current.at < 1500) {
-      setCode('');
-      return;
-    }
-    lastScan.current = { code: raw, at: Date.now() };
     if (!raw) return;
     const r = await lookupBarcode(raw);
     setFound(r.data?.found ? r.data.item : null);
@@ -29,7 +20,9 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
     inputRef.current?.focus();
   };
 
-  useEffect(() => listenBarcode(check), []);
+  const checkRef = useRef(check);
+  checkRef.current = check;
+  useEffect(() => listenBarcode(c => checkRef.current(c)), []);
 
   const linkExisting = p => setForm({
     code: form.code, name: p.name, price: p.price, category: p.category, productId: p.id
@@ -67,11 +60,8 @@ export default function BarcodeAdmin({ barcodes = [], products = [], categories 
           <div className="p-4 flex gap-3 border-b border-gray-100">
             <input
               ref={inputRef} autoFocus value={code}
+              data-barcode-input
               onChange={e => setCode(e.target.value)}
-              onKeyDown={e => {
-                if (e.key !== 'Enter' || e.defaultPrevented) return;
-                check();
-              }}
               placeholder="Barkod okut / yaz..."
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 font-mono focus:border-primary outline-none"
             />
